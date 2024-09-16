@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES6", // Target ECMAScript 6 or later
+    "module": "commonjs", // Use commonjs modules for Node.js
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./", // Root directory for source files
+    "strict": true, // Enable all strict type-checking options
+    "esModuleInterop": true, // Enable import/export interoperability between ES and CommonJS
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Ensure file name case consistency
+    "types": ["node"] // Include Node.js type definitions (fixes the 'process' error)
+  },
+  "exclude": [
+    "node_modules" // Exclude node_modules from compilation
+  ]
+}
