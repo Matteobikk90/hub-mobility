@@ -1,43 +1,20 @@
-import { db, storage } from '@/firebase';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  updateDoc,
-} from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import CarForm from '@/features/car-form';
+import { db } from '@/firebase';
+import { useAddCar } from '@/hooks/useAdd';
+import { useDeleteCar } from '@/hooks/useDelete';
+import { useEditCar } from '@/hooks/useEdit';
+import { Car } from '@/types/car.types';
+import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-
-type Car = {
-  id: string;
-  title: string;
-  subtitle: string;
-  imageUrl: string;
-  features: string[];
-  price: number;
-};
-
-type UpdatedCarData = {
-  title?: string;
-  subtitle?: string;
-  price?: number;
-  features?: string[];
-  imageUrl?: string;
-};
 
 export const Admin: React.FC = () => {
   const [sectionId, setSectionId] = useState('1'); // Default to Section 1
   const [cars, setCars] = useState<Car[]>([]);
-  const [newCar, setNewCar] = useState<Partial<Car>>({
-    title: '',
-    subtitle: '',
-    price: 0,
-    features: [],
-  });
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [editCarId, setEditCarId] = useState<string | null>(null);
+
+  const { mutate: deleteCar } = useDeleteCar(sectionId);
+  const { mutate: editCar } = useEditCar(sectionId);
+  const { mutate: addCar } = useAddCar(sectionId); // Use the add car mutation
 
   // Fetch cars for the selected section when it changes
   useEffect(() => {
@@ -54,103 +31,50 @@ export const Admin: React.FC = () => {
     fetchCars();
   }, [sectionId]);
 
-  // Add a new car to Firestore with image upload and features
-  const handleAddCar = async () => {
-    if (
-      !newCar.title ||
-      !newCar.subtitle ||
-      !imageFile ||
-      newCar.price === undefined
-    )
-      return;
-
-    const imageRef = ref(storage, `cars/${imageFile.name}`);
-    const uploadTask = uploadBytesResumable(imageRef, imageFile);
-
-    uploadTask.on(
-      'state_changed',
-      null,
-      (error) => console.error(error),
-      async () => {
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        const carData = {
-          ...newCar,
-          imageUrl: downloadURL,
-          features: newCar.features || [],
-        } as Car;
-
-        await addDoc(collection(db, `section_${sectionId}`), carData);
-
-        setCars((prevCars) => [...prevCars, carData]);
-        setNewCar({ title: '', subtitle: '', price: 0, features: [] });
-        setImageFile(null);
-      }
-    );
+  // Handle form submission (add or edit)
+  const handleCarSubmit = (carData: Partial<Car>, imageFile: File | null) => {
+    if (editCarId) {
+      // Edit existing car
+      const updatedCarData: Partial<Car> = {
+        ...carData,
+        features: carData.features || [],
+      };
+      editCar({
+        carId: editCarId,
+        updatedCarData,
+        imageFile,
+      });
+      setEditCarId(null);
+    } else {
+      // Add new car
+      addCar({
+        carData,
+        imageFile,
+      });
+    }
   };
 
-  // Delete an item from Firestore
-  const handleDeleteCar = async (id: string) => {
-    await deleteDoc(doc(db, `section_${sectionId}`, id));
-    setCars(cars.filter((car) => car.id !== id)); // Remove the car from the list
+  // Clear form and exit edit mode
+  const clearForm = () => {
+    setEditCarId(null);
   };
 
   // Select a car to edit
-  const handleEditCar = (car: Car) => {
+  const handleEditCarSelection = (car: Car) => {
     setEditCarId(car.id);
-    setNewCar(car);
   };
 
-  // Update an existing car in Firestore
-  const handleUpdateCar = async () => {
-    if (editCarId) {
-      const carDocRef = doc(db, `section_${sectionId}`, editCarId);
-
-      // Prepare the updated car data
-      let updatedCarData: UpdatedCarData = {
-        ...(newCar.title && { title: newCar.title }),
-        ...(newCar.subtitle && { subtitle: newCar.subtitle }),
-        ...(newCar.price !== undefined && { price: newCar.price }),
-        ...(newCar.features && { features: newCar.features }),
-      };
-
-      // If a new image is provided, handle image upload
-      if (imageFile) {
-        const imageRef = ref(storage, `cars/${imageFile.name}`);
-        const uploadTask = uploadBytesResumable(imageRef, imageFile);
-
-        uploadTask.on(
-          'state_changed',
-          null,
-          (error) => console.error(error),
-          async () => {
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-
-            // Add the imageUrl to the car data
-            updatedCarData = { ...updatedCarData, imageUrl: downloadURL };
-
-            // Update the car in Firestore with new image
-            await updateDoc(carDocRef, updatedCarData);
-            setCars(
-              cars.map((car) =>
-                car.id === editCarId ? { ...car, ...updatedCarData } : car
-              )
-            );
-            setEditCarId(null); // Exit edit mode
-            setNewCar({ title: '', subtitle: '', price: 0, features: [] });
-            setImageFile(null);
-          }
-        );
-      } else {
-        // Update Firestore without image change
-        await updateDoc(carDocRef, updatedCarData);
-        setCars(
-          cars.map((car) =>
-            car.id === editCarId ? { ...car, ...updatedCarData } : car
-          )
-        );
-        setEditCarId(null); // Exit edit mode
-        setNewCar({ title: '', subtitle: '', price: 0, features: [] });
-      }
+  // Handle car deletion and reset form
+  const handleDeleteCar = (carId: string) => {
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this car?'
+    );
+    if (confirmDelete) {
+      deleteCar(carId, {
+        onSuccess: () => {
+          clearForm(); // Clear form after deleting a car
+        },
+      });
     }
   };
 
@@ -173,54 +97,15 @@ export const Admin: React.FC = () => {
         ))}
       </select>
 
-      {/* Add/Edit Car Form */}
-      <div className="mb-8 border p-4 rounded">
-        <h3 className="text-lg font-semibold mb-4">
-          {editCarId ? 'Edit Car' : 'Add New Car'}
-        </h3>
-        <input
-          type="text"
-          placeholder="Title"
-          value={newCar.title || ''}
-          onChange={(e) =>
-            setNewCar((prev) => ({ ...prev, title: e.target.value }))
-          }
-          className="block mb-2 p-2 border rounded w-full"
-        />
-        <input
-          type="text"
-          placeholder="Subtitle"
-          value={newCar.subtitle || ''}
-          onChange={(e) =>
-            setNewCar((prev) => ({ ...prev, subtitle: e.target.value }))
-          }
-          className="block mb-2 p-2 border rounded w-full"
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={newCar.price || 0}
-          onChange={(e) =>
-            setNewCar((prev) => ({
-              ...prev,
-              price: parseFloat(e.target.value),
-            }))
-          }
-          className="block mb-2 p-2 border rounded w-full"
-        />
-        <input
-          type="file"
-          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-          className="block mb-2 p-2"
-        />
-
-        <button
-          onClick={editCarId ? handleUpdateCar : handleAddCar}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          {editCarId ? 'Update Car' : 'Add Car'}
-        </button>
-      </div>
+      {/* Car Form Component */}
+      <CarForm
+        initialCarData={
+          editCarId ? cars.find((car) => car.id === editCarId) : undefined
+        }
+        editCarId={editCarId}
+        onSubmit={handleCarSubmit}
+        onCancelEdit={clearForm}
+      />
 
       {/* Display existing cars in the section */}
       <div className="cars-list">
@@ -236,7 +121,7 @@ export const Admin: React.FC = () => {
               <p>Features: {car.features.join(', ')}</p>
               <img alt={car.title} src={car.imageUrl} />
               <button
-                onClick={() => handleEditCar(car)}
+                onClick={() => handleEditCarSelection(car)}
                 className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
               >
                 Edit
