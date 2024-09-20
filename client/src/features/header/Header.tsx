@@ -1,27 +1,33 @@
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
-export const Header = () => {
+const Header: React.FC = () => {
+  const location = useLocation(); // Get the current URL path
+
   return (
     <header className="bg-gray-800 p-4 text-white">
       <nav>
         <ul className="flex space-x-4">
-          <li>
-            <Link to="/section/1">Section 1</Link>
-          </li>
-          <li>
-            <Link to="/section/2">Section 2</Link>
-          </li>
-          <li>
-            <Link to="/section/3">Section 3</Link>
-          </li>
-          <li>
-            <Link to="/section/4">Section 4</Link>
-          </li>
-          <li>
-            <Link to="/section/5">Section 5</Link>
-          </li>
+          {/* Links to different sections */}
+          {[...Array(5)].map((_, index) => {
+            const sectionPath = `/section/${index + 1}`;
+            const isActive = location.pathname === sectionPath;
+
+            return (
+              <li key={index}>
+                <Link
+                  to={sectionPath}
+                  className={isActive ? 'text-yellow-300' : 'text-white'}
+                >
+                  Section {index + 1}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </header>
   );
 };
+
+export default Header;
