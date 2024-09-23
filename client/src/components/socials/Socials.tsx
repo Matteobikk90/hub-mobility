@@ -7,7 +7,10 @@ export const Socials = () => (
     </h3>
     <ul className="flex gap-4">
       {socials.map(({ name, url, icon }) => (
-        <li className="bg-white text-grey-middle rounded-full w-9 h-9 flex items-center justify-center">
+        <li
+          key={name}
+          className="bg-white text-grey-middle rounded-full w-9 h-9 flex items-center justify-center"
+        >
           <a
             key={name}
             href={url}

@@ -1,31 +1,42 @@
-import { Facebook, Instagram, Linkedin, XCircle } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
-export const navbarLinks: { id: string; short?: string; name: string }[] = [
+export const navbarLinks: {
+  id: string;
+  short?: string;
+  name: string;
+  path: string;
+}[] = [
   {
     id: 'long',
     short: 'NLT',
     name: 'Noleggio Lungo Termine',
+    path: 'noleggio-lungo-termine',
   },
   {
     id: 'short',
     short: 'NBT',
     name: 'Noleggio Breve Termine',
+    path: 'noleggio-breve-termine',
   },
   {
     id: 'super',
     name: 'Super Car',
+    path: 'super-car',
   },
   {
     id: 'carrozzeria',
     name: 'Carrozzeria / Cristalli',
+    path: 'carrozzeria-cristalli',
   },
   {
     id: 'officina',
     name: 'Officina / Gommista',
+    path: 'officina-gommista',
   },
   {
     id: 'assicurazioni',
     name: 'Assicurazioni',
+    path: 'assicurazioni',
   },
 ];
 
@@ -120,6 +131,6 @@ export const socials = [
   {
     name: 'X',
     url: 'https://www.x.com',
-    icon: <XCircle />,
+    icon: <Twitter />,
   },
 ];

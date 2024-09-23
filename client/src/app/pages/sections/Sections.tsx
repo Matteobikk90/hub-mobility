@@ -67,7 +67,7 @@ export const Section: React.FC = () => {
     );
 
   return (
-    <div className="container mx-auto">
+    <section className="container mx-auto">
       <h2 className="text-2xl font-semibold mb-4">
         Cars in Section {sectionId}
       </h2>
@@ -105,6 +105,6 @@ export const Section: React.FC = () => {
         nextLinkClassName={'next-link'}
         disabledClassName={'disabled'}
       />
-    </div>
+    </section>
   );
 };

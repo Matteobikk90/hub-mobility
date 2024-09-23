@@ -16,10 +16,10 @@ export const Navbar = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
     <>
       {/* Desktop Navigation */}
       <nav className="hidden md:flex items-center justify-around w-full">
-        {navbarLinks.map(({ id, name, short }) => (
+        {navbarLinks.map(({ id, path, name, short }, index) => (
           <Link
-            key={id}
-            to={`/servizi/${id}`}
+            key={path}
+            to={index <= 2 ? `/automobili/${path}` : `/servizi/${path}`} // Use path instead of id
             className="flex flex-col items-center justify-between text-center hover:text-blue-middle"
           >
             <span className="flex items-center gap-2">
@@ -39,10 +39,10 @@ export const Navbar = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
             : 'opacity-0 -translate-y-full'
         }`}
       >
-        {navbarLinks.map(({ id, name, short }) => (
+        {navbarLinks.map(({ id, path, name, short }, index) => (
           <Link
-            key={id}
-            to={`/servizi/${id}`}
+            key={path}
+            to={index <= 2 ? `/automobili/${path}` : `/servizi/${path}`} // Use path for dynamic routing
             className="w-full flex flex-col items-center justify-between text-center hover:bg-blue-middle"
           >
             <span className="flex items-center gap-2">

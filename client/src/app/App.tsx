@@ -2,6 +2,7 @@ import Admin from '@/app/pages/admin';
 import Home from '@/app/pages/home';
 import Login from '@/app/pages/login';
 import Sections from '@/app/pages/sections';
+import Services from '@/app/pages/services';
 import Footer from '@/features/footer';
 import Header from '@/features/header';
 import { useToast } from '@/hooks/useToast';
@@ -41,13 +42,17 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/servizi/:sectionId" element={<Sections />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/automobili/:sectionId" element={<Sections />} />
+            <Route path="/servizi/:sectionId" element={<Services />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </main>
       </Router>
+
       <Footer />
       <ToastContainer />
     </QueryClientProvider>

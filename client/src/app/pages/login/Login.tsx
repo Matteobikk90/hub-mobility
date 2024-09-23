@@ -17,21 +17,23 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleLogin} className="p-4">
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button type="submit">Login</button>
-      {error && <p>{error}</p>}
-    </form>
+    <section className="p-4 flex justify-center items-center">
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
+        <button type="submit">Login</button>
+        {error && <p>{error}</p>}
+      </form>
+    </section>
   );
 };

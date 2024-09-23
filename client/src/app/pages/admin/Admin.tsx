@@ -79,7 +79,7 @@ export const Admin: React.FC = () => {
   };
 
   return (
-    <div className="admin-panel container mx-auto py-8">
+    <section className="container mx-auto py-8">
       <h2 className="text-2xl font-semibold mb-4">
         Admin Panel - Section {sectionId}
       </h2>
@@ -136,6 +136,6 @@ export const Admin: React.FC = () => {
           ))}
         </ul>
       </div>
-    </div>
+    </section>
   );
 };
