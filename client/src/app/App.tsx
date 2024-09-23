@@ -42,7 +42,7 @@ const App: React.FC = () => {
         <Header /> {/* Header stays at the top */}
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/section/:sectionId" element={<Sections />} />
+          <Route path="/servizi/:sectionId" element={<Sections />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/login" element={<Login />} />
         </Routes>
