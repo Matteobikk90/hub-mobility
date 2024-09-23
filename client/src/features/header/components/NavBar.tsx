@@ -20,13 +20,13 @@ export const Navbar = ({ isMenuOpen }: { isMenuOpen: boolean }) => {
           <Link
             key={id}
             to={`/servizi/${id}`}
-            className="flex flex-col items-center justify-between text-center"
+            className="flex flex-col items-center justify-between text-center hover:text-blue-middle"
           >
             <span className="flex items-center gap-2">
               {iconMapping[id]}
-              {short && <span className="text-sm font-semibold">{short}</span>}
+              {short && <span className="text-sm font-bold">{short}</span>}
             </span>
-            <span className="text-lg font-normal">{name}</span>
+            <span className="text-lg font-regular">{name}</span>
           </Link>
         ))}
       </nav>

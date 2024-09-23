@@ -2,6 +2,7 @@ import Admin from '@/app/pages/admin';
 import Home from '@/app/pages/home';
 import Login from '@/app/pages/login';
 import Sections from '@/app/pages/sections';
+import Footer from '@/features/footer';
 import Header from '@/features/header';
 import { useToast } from '@/hooks/useToast';
 import {
@@ -39,7 +40,7 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <Header /> {/* Header stays at the top */}
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/servizi/:sectionId" element={<Sections />} />
@@ -47,6 +48,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<Login />} />
         </Routes>
       </Router>
+      <Footer />
       <ToastContainer />
     </QueryClientProvider>
   );
