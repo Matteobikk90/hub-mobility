@@ -1,14 +1,18 @@
 import CarForm from '@/features/car-form';
-import { db } from '@/firebase';
+import { auth, db } from '@/firebase';
 import { useAddCar } from '@/hooks/useAdd';
 import { useDeleteCar } from '@/hooks/useDelete';
 import { useEditCar } from '@/hooks/useEdit';
 import { Car } from '@/types/car.types';
+import { navbarLinks } from '@/utils/lists';
+import { signOut } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const Admin: React.FC = () => {
-  const [sectionId, setSectionId] = useState('1'); // Default to Section 1
+  const navigate = useNavigate();
+  const [sectionId, setSectionId] = useState('long'); // Default to Section 1
   const [cars, setCars] = useState<Car[]>([]);
   const [editCarId, setEditCarId] = useState<string | null>(null);
 
@@ -30,6 +34,11 @@ export const Admin: React.FC = () => {
 
     fetchCars();
   }, [sectionId]);
+
+  const handleSignOut = async () => {
+    await signOut(auth);
+    navigate('/login');
+  };
 
   // Handle form submission (add or edit)
   const handleCarSubmit = (carData: Partial<Car>, imageFile: File | null) => {
@@ -80,22 +89,21 @@ export const Admin: React.FC = () => {
 
   return (
     <section className="container mx-auto py-8">
-      <h2 className="text-2xl font-semibold mb-4">
-        Admin Panel - Section {sectionId}
-      </h2>
-
-      {/* Section Select */}
-      <select
-        value={sectionId}
-        onChange={(e) => setSectionId(e.target.value)}
-        className="mb-4 p-2 border rounded"
-      >
-        {[...Array(5)].map((_, index) => (
-          <option key={index} value={`${index + 1}`}>
-            Section {index + 1}
-          </option>
-        ))}
-      </select>
+      <h2 className="text-2xl font-semibold mb-4">Admin Panel - Macchine</h2>
+      <div className="flex justify-between">
+        <select
+          value={sectionId}
+          onChange={(e) => setSectionId(e.target.value)}
+          className="mb-4 p-2 border rounded"
+        >
+          {navbarLinks.slice(0, 3).map(({ id, name }) => (
+            <option key={id} value={name}>
+              {name}
+            </option>
+          ))}
+        </select>
+        <button onClick={handleSignOut}>Logout</button>
+      </div>
 
       {/* Car Form Component */}
       <CarForm
@@ -109,9 +117,7 @@ export const Admin: React.FC = () => {
 
       {/* Display existing cars in the section */}
       <div className="cars-list">
-        <h3 className="text-lg font-semibold mb-4">
-          Cars in Section {sectionId}
-        </h3>
+        <h3 className="text-lg font-semibold mb-4">Macchine in {sectionId}</h3>
         <ul>
           {cars.map((car) => (
             <li key={car.id} className="mb-4">

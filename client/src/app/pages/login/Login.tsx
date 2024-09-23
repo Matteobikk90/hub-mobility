@@ -1,8 +1,10 @@
 import { auth } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -11,6 +13,7 @@ export const Login: React.FC = () => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      navigate('/admin');
     } catch (err) {
       setError('Login failed');
     }
@@ -24,12 +27,14 @@ export const Login: React.FC = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
+          required
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+          required
         />
         <button type="submit">Login</button>
         {error && <p>{error}</p>}

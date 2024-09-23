@@ -1,18 +1,14 @@
-import Admin from '@/app/pages/admin';
-import Home from '@/app/pages/home';
-import Login from '@/app/pages/login';
-import Sections from '@/app/pages/sections';
-import Services from '@/app/pages/services';
-import Footer from '@/features/footer';
-import Header from '@/features/header';
+import AppWrapper from '@/app/AppWrapper';
+import { auth } from '@/firebase';
 import { useToast } from '@/hooks/useToast';
 import {
   QueryCache,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { useMemo } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { useEffect, useMemo, useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 const App: React.FC = () => {
@@ -22,9 +18,9 @@ const App: React.FC = () => {
       new QueryClient({
         defaultOptions: {
           queries: {
-            retry: 2, // Retry failed requests twice before showing an error
-            refetchOnWindowFocus: false, // Avoid refetching on window focus
-            staleTime: 60 * 1000 * 5, // Data considered fresh for DEFAULT_QUERY_CACHE_TIME
+            retry: 2,
+            refetchOnWindowFocus: false,
+            staleTime: 60 * 1000 * 5,
           },
         },
         queryCache: new QueryCache({
@@ -38,22 +34,37 @@ const App: React.FC = () => {
     []
   );
 
+  // State to track authentication status
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [authLoading, setAuthLoading] = useState<boolean>(true);
+
+  // Firebase Auth Listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user: User | null) => {
+      if (user) {
+        // User is logged in
+        setIsLoggedIn(true);
+      } else {
+        // User is logged out
+        setIsLoggedIn(false);
+      }
+      setAuthLoading(false); // Stop loading once the auth state is known
+    });
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
+  }, []);
+
+  if (authLoading) {
+    // You can add a loading spinner here if needed
+    return <div>Loading...</div>;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/automobili/:sectionId" element={<Sections />} />
-            <Route path="/servizi/:sectionId" element={<Services />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </main>
+        <AppWrapper isLoggedIn={isLoggedIn} />
       </Router>
-
-      <Footer />
       <ToastContainer />
     </QueryClientProvider>
   );
