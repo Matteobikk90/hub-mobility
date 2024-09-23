@@ -5,7 +5,7 @@ export const Socials = () => (
     <h3 className="text-grey-light uppercase">
       <strong>Social media</strong>
     </h3>
-    <ul className="flex gap-4">
+    <ul className="flex gap-4 m-auto md:m-0">
       {socials.map(({ name, url, icon }) => (
         <li
           key={name}

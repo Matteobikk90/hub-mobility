@@ -5,7 +5,7 @@ import { deleteDoc, doc } from 'firebase/firestore';
 
 // Function to delete a car
 const handleDeleteCar = async (carId: string, sectionId: string) => {
-  const carDocRef = doc(db, `section_${sectionId}`, carId);
+  const carDocRef = doc(db, sectionId, carId);
   await deleteDoc(carDocRef); // Firebase delete operation
 };
 

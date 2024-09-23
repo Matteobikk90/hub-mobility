@@ -12,7 +12,7 @@ const handleEditCar = async (
   sectionId: string,
   imageFile: File | null
 ) => {
-  const carDocRef = doc(db, `section_${sectionId}`, carId);
+  const carDocRef = doc(db, sectionId, carId);
 
   if (imageFile) {
     const imageRef = ref(storage, `cars/${imageFile.name}`);

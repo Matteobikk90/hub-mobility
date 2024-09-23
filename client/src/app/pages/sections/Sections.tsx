@@ -1,39 +1,28 @@
 import { db } from '@/firebase';
+import { Car } from '@/types/car.types';
 import { useQuery } from '@tanstack/react-query';
 import { collection, getDocs } from 'firebase/firestore';
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { useParams } from 'react-router-dom';
 
-type Car = {
-  id: string;
-  title: string;
-  subtitle: string;
-  imageUrl: string;
-  features: string[];
-  price: number;
-};
-
-// Function to fetch cars from Firestore for the given section
 const fetchCars = async (sectionId: string): Promise<Car[]> => {
-  const querySnapshot = await getDocs(collection(db, `section_${sectionId}`));
+  const querySnapshot = await getDocs(collection(db, sectionId));
   const cars = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     title: doc.data().title,
     subtitle: doc.data().subtitle,
     imageUrl: doc.data().imageUrl,
-    features: doc.data().features, // Adjust Firestore field as needed
-    price: doc.data().price,
+    features: doc.data().features,
   })) as Car[];
   return cars;
 };
 
 export const Section: React.FC = () => {
-  const { sectionId } = useParams<{ sectionId: string }>(); // Get sectionId from the URL
+  const { sectionId } = useParams<{ sectionId: string }>();
   const [currentPage, setCurrentPage] = useState(0);
-  const carsPerPage = 6; // Show 6 cars per page
+  const carsPerPage = 6;
 
-  // Fetch cars for the selected section using React Query
   const {
     data: cars,
     error,
@@ -42,22 +31,19 @@ export const Section: React.FC = () => {
     queryKey: ['cars', sectionId],
     queryFn: () => fetchCars(sectionId!),
   });
+  console.log(sectionId);
+  console.log(cars);
 
-  // Calculate the displayed cars for the current page
   const displayedCars = cars?.slice(
     currentPage * carsPerPage,
     (currentPage + 1) * carsPerPage
   );
 
-  // Handle page click for pagination
-  const handlePageClick = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected); // Update the current page
-  };
+  const handlePageClick = (selectedItem: { selected: number }) =>
+    setCurrentPage(selectedItem.selected);
 
-  // Loading state
   if (isLoading) return <div>Loading cars...</div>;
 
-  // Error state
   if (error)
     return (
       <div>
@@ -72,7 +58,6 @@ export const Section: React.FC = () => {
         Cars in Section {sectionId}
       </h2>
 
-      {/* Car list */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         {displayedCars?.map((car) => (
           <div key={car.id} className="border p-4">
@@ -89,7 +74,6 @@ export const Section: React.FC = () => {
         ))}
       </div>
 
-      {/* Pagination component */}
       <ReactPaginate
         previousLabel={'Previous'}
         nextLabel={'Next'}

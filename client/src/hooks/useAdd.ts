@@ -33,7 +33,7 @@ const handleAddCar = async (
   }
 
   // Add car to Firestore
-  await addDoc(collection(db, `section_${sectionId}`), carWithImageUrl);
+  await addDoc(collection(db, sectionId), carWithImageUrl);
 };
 
 // UseMutation hook for adding a new car

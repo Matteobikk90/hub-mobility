@@ -12,18 +12,18 @@ import { useNavigate } from 'react-router-dom';
 
 export const Admin: React.FC = () => {
   const navigate = useNavigate();
-  const [sectionId, setSectionId] = useState('long'); // Default to Section 1
+  const [sectionId, setSectionId] = useState('noleggio-lungo-termine');
   const [cars, setCars] = useState<Car[]>([]);
   const [editCarId, setEditCarId] = useState<string | null>(null);
 
   const { mutate: deleteCar } = useDeleteCar(sectionId);
   const { mutate: editCar } = useEditCar(sectionId);
-  const { mutate: addCar } = useAddCar(sectionId); // Use the add car mutation
+  const { mutate: addCar } = useAddCar(sectionId);
 
   // Fetch cars for the selected section when it changes
   useEffect(() => {
     const fetchCars = async () => {
-      const carsCollection = collection(db, `section_${sectionId}`);
+      const carsCollection = collection(db, sectionId);
       const carsSnapshot = await getDocs(carsCollection);
       const fetchedCars = carsSnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -64,14 +64,10 @@ export const Admin: React.FC = () => {
   };
 
   // Clear form and exit edit mode
-  const clearForm = () => {
-    setEditCarId(null);
-  };
+  const clearForm = () => setEditCarId(null);
 
   // Select a car to edit
-  const handleEditCarSelection = (car: Car) => {
-    setEditCarId(car.id);
-  };
+  const handleEditCarSelection = (car: Car) => setEditCarId(car.id);
 
   // Handle car deletion and reset form
   const handleDeleteCar = (carId: string) => {
@@ -96,8 +92,8 @@ export const Admin: React.FC = () => {
           onChange={(e) => setSectionId(e.target.value)}
           className="mb-4 p-2 border rounded"
         >
-          {navbarLinks.slice(0, 3).map(({ id, name }) => (
-            <option key={id} value={name}>
+          {navbarLinks.slice(0, 3).map(({ id, path, name }) => (
+            <option key={id} value={path}>
               {name}
             </option>
           ))}
