@@ -10,7 +10,7 @@ export const Header: React.FC = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
-    <header className="bg-grey-middle text-cream-middle p-4 gap-4 flex md:flex-col justify-between items-center">
+    <header className="bg-black text-cream-middle p-4 gap-4 flex md:flex-col justify-between items-center">
       <Link to="/">
         <img
           className="md:w-[28.125rem]"
@@ -23,7 +23,11 @@ export const Header: React.FC = () => {
 
       {/* Hamburger Menu Icon (Mobile) */}
       <button className="md:hidden focus:outline-none" onClick={toggleMenu}>
-        {isMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+        {isMenuOpen ? (
+          <X className="w-8 h-8" color="#00c2cb" />
+        ) : (
+          <Menu className="w-8 h-8" color="#00c2cb" />
+        )}
       </button>
 
       <Navbar isMenuOpen={isMenuOpen} />

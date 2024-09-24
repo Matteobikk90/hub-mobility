@@ -1,20 +1,18 @@
+import { ServicesId } from '@/types/services.types';
 import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
 export const navbarLinks: {
   id: string;
-  short?: string;
   name: string;
   path: string;
 }[] = [
   {
     id: 'long',
-    short: 'NLT',
     name: 'Noleggio Lungo Termine',
     path: 'noleggio-lungo-termine',
   },
   {
     id: 'short',
-    short: 'NBT',
     name: 'Noleggio Breve Termine',
     path: 'noleggio-breve-termine',
   },
@@ -133,4 +131,69 @@ export const socials = [
     url: 'https://www.x.com',
     icon: <Twitter />,
   },
+];
+
+export const serviceData: Record<
+  ServicesId,
+  {
+    videoUrl: string;
+    title: string;
+    subtitle: string;
+    description: string;
+    formTitle: string;
+    formText: string;
+  }
+> = {
+  'carrozzeria-cristalli': {
+    videoUrl: '/assets/videos/services/carrozzeria-video.mp4',
+    title: 'Carrozzeria / Cristalli',
+    subtitle: 'Servizi di Carrozzeria e Riparazione Cristalli',
+    description:
+      "Scopri l'arte della carrozzeria al Gruppo Maestri, dove ogni veicolo viene trattato con maestria e attenzione. Da incidenti minori alle riparazioni più complesse, i nostri esperti offrono un restauro impeccabile. Rinnova la tua auto con la precisione e l'eccellenza che solo noi possiamo garantire.",
+    formTitle: 'Siamo qui per aiutarti!',
+    formText: 'Denuncia qui il tuo sinistro.',
+  },
+  'officina-gommista': {
+    videoUrl: '/assets/videos/services/officina-video.mp4',
+    title: 'Officina / Gommista',
+    subtitle: 'Riparazioni Auto e Servizi di Gommista',
+    description:
+      'Ci occupiamo di riparazioni auto e manutenzione gomme per ogni tipo di veicolo.',
+    formTitle: 'Siamo qui per aiutarti!',
+    formText: 'Prenota qui il tuo tagliando o il cambio gomme',
+  },
+  assicurazioni: {
+    videoUrl: '/assets/videos/services/assicurazioni-video.mp4',
+    title: 'Assicurazioni',
+    subtitle: 'Servizi Assicurativi Personalizzati',
+    description:
+      'Forniamo consulenza e soluzioni assicurative su misura per ogni esigenza.',
+    formTitle: 'Siamo qui per aiutarti!',
+    formText: 'Richiedi qui il tuo preventivo auto',
+  },
+};
+
+export const insuranceCompanies = [
+  { id: 'allianz', name: 'Allianz' },
+  { id: 'allianz-direct', name: 'Allianz Direct' },
+  { id: 'allianz-viva', name: 'Allianz Viva' },
+  { id: 'assimoco', name: 'Assimoco' },
+  { id: 'axa', name: 'AXA' },
+  { id: 'creditras', name: 'CreditRas' },
+  { id: 'fit2you', name: 'Fit2you' },
+  { id: 'generali', name: 'Generali' },
+  { id: 'groupama-assicurazioni', name: 'Groupama Assicurazioni' },
+  { id: 'gruppo-cattolica', name: 'Gruppo Cattolica' },
+  { id: 'intesa-sanpaolo-assicura', name: 'Intesa SanPaolo Assicura' },
+  { id: 'italiana-assicurazioni', name: 'Italiana Assicurazioni' },
+  { id: 'itas-assicurazioni', name: 'Itas Assicurazioni' },
+  { id: 'prima-assicurazioni', name: 'Prima Assicurazioni' },
+  { id: 'quixa', name: 'Quixa' },
+  { id: 'reale-mutua', name: 'Reale Mutua' },
+  { id: 'sara', name: 'Sara' },
+  { id: 'unipol-service', name: 'Unipol Service' },
+  { id: 'valpiave', name: 'ValPiave' },
+  { id: 'verti', name: 'Verti' },
+  { id: 'vittoria-assicurazioni', name: 'Vittoria Assicurazioni' },
+  { id: 'zurich', name: 'Zurich' },
 ];

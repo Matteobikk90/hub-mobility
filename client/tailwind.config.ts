@@ -20,37 +20,18 @@ module.exports = {
         bold: 700,
       },
       colors: {
-        grey: { light: '#7d858a', middle: '#4f5d66', dark: '#3a454a' },
-        blue: { light: '#373e42', middle: '#1b2328', dark: '#0f1112' },
-        cream: { light: '#f2f2f2', middle: '#e0e0e0', dark: '#a7a7a7' },
+        mask: 'rgba(0, 194, 203, 0.5)',
+        azzurro: '#00c2cb',
         transparent: 'transparent',
       },
       keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
-        },
-        marquee: {
-          '0%': { transform: 'translateX(0%)' },
-          '90%': { transform: 'translateX(-100%)' },
-          '100%': { transform: 'translateX(0%)' },
-        },
-        progress: {
-          '0%': { width: '0%' },
-          '50%': { width: '50%' },
-          '100%': { width: '100%' },
+        slideInLeft: {
+          '0%': { transform: 'translateX(-100%)', opacity: 0 },
+          '100%': { transform: 'translateX(0)', opacity: 1 },
         },
       },
       animation: {
-        'accordion-down': 'accordion-down 0.2s ease-out',
-        marquee: 'marquee 10s linear infinite',
-        'accordion-up': 'accordion-up 0.2s ease-out',
-        progress: 'progress 30s linear',
-        'progress-finished': 'progress 4s linear',
+        'slide-in-left': 'slideInLeft 0.5s ease-out forwards',
       },
     },
   },
