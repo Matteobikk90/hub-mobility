@@ -114,7 +114,7 @@ export const Admin: React.FC = () => {
       </div>
 
       {/* Display existing cars in the section */}
-      <ul className="grid grid-cols-3 gap-4">
+      <ul className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
         <CarForm
           initialCarData={
             editCarId ? cars.find((car) => car.id === editCarId) : {}
