@@ -43,14 +43,12 @@ export const Admin: React.FC = () => {
 
   // Handle form submission (add or edit)
   const handleCarSubmit = (carData: Partial<Car>, imageFile: File | null) => {
-    // Generate slug based on car title
     const slug = generateSlug(carData.title || '');
 
     if (editCarId) {
-      // Edit existing car
       const updatedCarData: Partial<Car> = {
         ...carData,
-        slug, // Ensure slug is updated with the car data
+        slug,
         features: carData.features || [],
       };
       editCar({
@@ -60,10 +58,9 @@ export const Admin: React.FC = () => {
       });
       setEditCarId(null);
     } else {
-      // Add new car
       const newCarData: Partial<Car> = {
         ...carData,
-        slug, // Add slug to new car data
+        slug,
         features: carData.features || [],
       };
       addCar({
@@ -82,13 +79,11 @@ export const Admin: React.FC = () => {
   // Handle car deletion and reset form
   const handleDeleteCar = (carId: string, name: string) => {
     const confirmDelete = window.confirm(
-      `Sei sicuro di voler rimuovere questa macchina - ${name.toLocaleUpperCase()} ?`
+      `Sei sicuro di voler rimuovere questa macchina - ${name.toUpperCase()} ?`
     );
     if (confirmDelete) {
       deleteCar(carId, {
-        onSuccess: () => {
-          clearForm(); // Clear form after deleting a car
-        },
+        onSuccess: () => clearForm(),
       });
     }
   };
@@ -120,10 +115,9 @@ export const Admin: React.FC = () => {
 
       {/* Display existing cars in the section */}
       <ul className="grid grid-cols-3 gap-4">
-        {/* Car Form Component */}
         <CarForm
           initialCarData={
-            editCarId ? cars.find((car) => car.id === editCarId) : undefined
+            editCarId ? cars.find((car) => car.id === editCarId) : {}
           }
           editCarId={editCarId}
           onSubmit={handleCarSubmit}

@@ -1,7 +1,6 @@
 import { useCarForm } from '@/features/car-form/hooks/useCarForm';
 import { Car } from '@/types/car.types';
 import { availableFeatures } from '@/utils/lists';
-import { generateSlug } from '@/utils/utilities';
 import React, { useEffect, useRef } from 'react';
 
 type CarFormProps = {
@@ -29,8 +28,7 @@ export const CarForm: React.FC<CarFormProps> = ({
   } = useCarForm({
     initialData: initialCarData || {},
     onSubmit: (carData, imageFile) => {
-      const slug = generateSlug(carData.title || ''); // Generate the slug from the title
-      onSubmit({ ...carData, slug }, imageFile); // Include slug in the car data passed to parent
+      onSubmit(carData, imageFile);
 
       setCarData({ title: '', subtitle: '', price: 0, features: [] }); // Reset form
       setImageFile(null);

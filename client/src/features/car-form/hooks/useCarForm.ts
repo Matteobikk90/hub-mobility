@@ -1,16 +1,18 @@
 import { Car } from '@/types/car.types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type UseCarFormProps = {
   initialData?: Partial<Car>;
   onSubmit: (carData: Partial<Car>, imageFile: File | null) => void;
 };
 
-export const useCarForm = ({ initialData = {}, onSubmit }: UseCarFormProps) => {
-  const [carData, setCarData] = useState<Partial<Car>>({
-    ...initialData,
-    features: initialData.features || [], // Ensure features is always an array
-  });
+export const useCarForm = ({ initialData, onSubmit }: UseCarFormProps) => {
+  const [carData, setCarData] = useState<Partial<Car>>(initialData || {});
+
+  useEffect(() => {
+    setCarData(initialData || {});
+  }, [initialData]);
+
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   // Handle input changes for text fields
