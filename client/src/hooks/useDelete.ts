@@ -6,13 +6,13 @@ import { deleteDoc, doc } from 'firebase/firestore';
 // Function to delete a car
 const handleDeleteCar = async (carId: string, sectionId: string) => {
   const carDocRef = doc(db, sectionId, carId);
-  await deleteDoc(carDocRef); // Firebase delete operation
+  await deleteDoc(carDocRef);
 };
 
 // UseMutation hook for deleting a car
 export const useDeleteCar = (sectionId: string) => {
   const queryClient = useQueryClient();
-  const { showSuccess, showError } = useToast(); // Access the toast functions
+  const { showSuccess, showError } = useToast();
 
   return useMutation({
     mutationFn: (carId: string) => handleDeleteCar(carId, sectionId),
@@ -23,7 +23,7 @@ export const useDeleteCar = (sectionId: string) => {
         refetchType: 'all',
         type: 'active',
       });
-      showSuccess('Car deleted successfully!'); // Show success toast
+      showSuccess('Macchina rimossa correttamente');
     },
     onError: (error, carId) => {
       showError(`Failed to delete car with ID: ${carId}.`);

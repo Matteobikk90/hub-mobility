@@ -7,8 +7,8 @@ import GommistaImg from '@/features/header/components/logos/assets/gommista.svg?
 import InsuranceImg from '@/features/header/components/logos/assets/insurance.svg?react';
 import RentImg from '@/features/header/components/logos/assets/noleggio.svg?react';
 
-export const SuperCarLogo = () => <SuperCarImg width={55} />;
-export const CarrozzeriaLogo = () => <CarrozzeriaImg width={45} />;
-export const InsuranceLogo = () => <InsuranceImg width={45} />;
-export const GommistaLogo = () => <GommistaImg width={45} />;
-export const RentLogo = () => <RentImg width={40} />;
+export const SuperCarLogo = () => <SuperCarImg height={50} width={55} />;
+export const CarrozzeriaLogo = () => <CarrozzeriaImg height={50} width={45} />;
+export const InsuranceLogo = () => <InsuranceImg height={50} width={45} />;
+export const GommistaLogo = () => <GommistaImg height={50} width={45} />;
+export const RentLogo = () => <RentImg height={50} width={40} />;

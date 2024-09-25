@@ -197,3 +197,12 @@ export const insuranceCompanies = [
   { id: 'vittoria-assicurazioni', name: 'Vittoria Assicurazioni' },
   { id: 'zurich', name: 'Zurich' },
 ];
+
+export const availableFeatures = [
+  'Aria condizionata',
+  'Autoradio',
+  'Sensori di parcheggio',
+  'Navigatore',
+  'Sensore di stabilità',
+  'Apple car play',
+];

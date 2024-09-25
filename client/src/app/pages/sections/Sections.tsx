@@ -1,22 +1,8 @@
-import { db } from '@/firebase';
-import { Car } from '@/types/car.types';
+import { fetchCars } from '@/utils/fetches';
 import { useQuery } from '@tanstack/react-query';
-import { collection, getDocs } from 'firebase/firestore';
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
-import { useParams } from 'react-router-dom';
-
-const fetchCars = async (sectionId: string): Promise<Car[]> => {
-  const querySnapshot = await getDocs(collection(db, sectionId));
-  const cars = querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    title: doc.data().title,
-    subtitle: doc.data().subtitle,
-    imageUrl: doc.data().imageUrl,
-    features: doc.data().features,
-  })) as Car[];
-  return cars;
-};
+import { Link, useParams } from 'react-router-dom';
 
 export const Section: React.FC = () => {
   const { sectionId } = useParams<{ sectionId: string }>();
@@ -31,8 +17,6 @@ export const Section: React.FC = () => {
     queryKey: ['cars', sectionId],
     queryFn: () => fetchCars(sectionId!),
   });
-  console.log(sectionId);
-  console.log(cars);
 
   const displayedCars = cars?.slice(
     currentPage * carsPerPage,
@@ -53,24 +37,47 @@ export const Section: React.FC = () => {
     );
 
   return (
-    <section className="container mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">
-        Cars in Section {sectionId}
+    <section className="max-w-[78rem] mx-auto p-8">
+      <h2 className="text-4xl font-bold text-black mb-8 text-center">
+        {sectionId}
       </h2>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-between gap-8">
         {displayedCars?.map((car) => (
-          <div key={car.id} className="border p-4">
+          <article className="text-black flex flex-col gap-4">
             <img
               src={car.imageUrl}
               alt={car.title}
-              className="w-full h-48 object-cover"
+              className="h-auto object-cover"
             />
-            <h3 className="text-lg font-bold">{car.title}</h3>
-            <p>{car.subtitle}</p>
-            <p>{car.features.join(', ')}</p>
-            <p className="text-green-600">${car.price}</p>
-          </div>
+            <h3 className="text-2xl font-bold">{car.title}</h3>
+            <p className="font-medium">{car.subtitle}</p>
+            <span className="w-full h-[0.125rem] bg-azzurro"></span>
+            <ul className="flex flex-wrap gap-6 text-xs">
+              {car.features.map((feature, index) => (
+                <li key={index} className="flex items-center gap-1">
+                  <span className="text-azzurro">✔</span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="ml-auto text-right">
+              <div className="border-b-2 pb-2 mb-2 border-b-azzurro max-w-max">
+                da
+                <strong className="text-3xl font-medium"> {car.price}€</strong>
+              </div>
+              al giorno
+            </div>
+            <Link
+              to={`/automobili/${sectionId}/${car.slug}`}
+              key={car.id}
+              className="flex flex-col justify-between"
+            >
+              <button className="text-black border-b-2 border-b-azzurro py-2">
+                Richiedi preventivo
+              </button>
+            </Link>
+          </article>
         ))}
       </div>
 
@@ -79,15 +86,15 @@ export const Section: React.FC = () => {
         nextLabel={'Next'}
         pageCount={Math.ceil(cars!.length / carsPerPage)}
         onPageChange={handlePageClick}
-        containerClassName={'pagination'}
-        activeClassName={'active'}
+        containerClassName={'pagination flex justify-center mt-8'}
+        activeClassName={'active text-azzurro'}
         pageClassName={'page-item'}
         pageLinkClassName={'page-link'}
         previousClassName={'prev-item'}
-        previousLinkClassName={'prev-link'}
+        previousLinkClassName={'prev-link text-azzurro'}
         nextClassName={'next-item'}
-        nextLinkClassName={'next-link'}
-        disabledClassName={'disabled'}
+        nextLinkClassName={'next-link text-azzurro'}
+        disabledClassName={'disabled text-gray-400'}
       />
     </section>
   );

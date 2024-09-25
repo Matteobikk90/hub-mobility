@@ -5,6 +5,7 @@ import { useDeleteCar } from '@/hooks/useDelete';
 import { useEditCar } from '@/hooks/useEdit';
 import { Car } from '@/types/car.types';
 import { navbarLinks } from '@/utils/lists';
+import { generateSlug } from '@/utils/utilities';
 import { signOut } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
@@ -42,10 +43,14 @@ export const Admin: React.FC = () => {
 
   // Handle form submission (add or edit)
   const handleCarSubmit = (carData: Partial<Car>, imageFile: File | null) => {
+    // Generate slug based on car title
+    const slug = generateSlug(carData.title || '');
+
     if (editCarId) {
       // Edit existing car
       const updatedCarData: Partial<Car> = {
         ...carData,
+        slug, // Ensure slug is updated with the car data
         features: carData.features || [],
       };
       editCar({
@@ -56,8 +61,13 @@ export const Admin: React.FC = () => {
       setEditCarId(null);
     } else {
       // Add new car
+      const newCarData: Partial<Car> = {
+        ...carData,
+        slug, // Add slug to new car data
+        features: carData.features || [],
+      };
       addCar({
-        carData,
+        carData: newCarData,
         imageFile,
       });
     }
@@ -70,9 +80,9 @@ export const Admin: React.FC = () => {
   const handleEditCarSelection = (car: Car) => setEditCarId(car.id);
 
   // Handle car deletion and reset form
-  const handleDeleteCar = (carId: string) => {
+  const handleDeleteCar = (carId: string, name: string) => {
     const confirmDelete = window.confirm(
-      'Are you sure you want to delete this car?'
+      `Sei sicuro di voler rimuovere questa macchina - ${name.toLocaleUpperCase()} ?`
     );
     if (confirmDelete) {
       deleteCar(carId, {
@@ -85,8 +95,10 @@ export const Admin: React.FC = () => {
 
   return (
     <section className="container mx-auto py-8">
-      <h2 className="text-2xl font-semibold mb-4">Admin Panel - Macchine</h2>
-      <div className="flex justify-between">
+      <h2 className="text-3xl font-semibold mb-4">
+        Panello di controllo - {sectionId}
+      </h2>
+      <div className="flex justify-between items-center">
         <select
           value={sectionId}
           onChange={(e) => setSectionId(e.target.value)}
@@ -98,46 +110,47 @@ export const Admin: React.FC = () => {
             </option>
           ))}
         </select>
-        <button onClick={handleSignOut}>Logout</button>
+        <button
+          className="border border-black rounded-full p-2 hover:bg-black hover:text-white"
+          onClick={handleSignOut}
+        >
+          Logout
+        </button>
       </div>
-
-      {/* Car Form Component */}
-      <CarForm
-        initialCarData={
-          editCarId ? cars.find((car) => car.id === editCarId) : undefined
-        }
-        editCarId={editCarId}
-        onSubmit={handleCarSubmit}
-        onCancelEdit={clearForm}
-      />
 
       {/* Display existing cars in the section */}
-      <div className="cars-list">
-        <h3 className="text-lg font-semibold mb-4">Macchine in {sectionId}</h3>
-        <ul>
-          {cars.map((car) => (
-            <li key={car.id} className="mb-4">
-              <h4 className="text-lg font-bold">{car.title}</h4>
-              <p>{car.subtitle}</p>
-              <p>Price: ${car.price}</p>
-              <p>Features: {car.features.join(', ')}</p>
-              <img alt={car.title} src={car.imageUrl} />
-              <button
-                onClick={() => handleEditCarSelection(car)}
-                className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDeleteCar(car.id)}
-                className="bg-red-500 text-white px-4 py-2 rounded"
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="grid grid-cols-3 gap-4">
+        {/* Car Form Component */}
+        <CarForm
+          initialCarData={
+            editCarId ? cars.find((car) => car.id === editCarId) : undefined
+          }
+          editCarId={editCarId}
+          onSubmit={handleCarSubmit}
+          onCancelEdit={clearForm}
+        />
+        {cars.map((car) => (
+          <li key={car.id} className="mb-4">
+            <h4 className="text-lg font-bold">{car.title}</h4>
+            <p>{car.subtitle}</p>
+            <p>Price: ${car.price}</p>
+            <p>Features: {car.features.join(', ')}</p>
+            <img width={200} alt={car.title} src={car.imageUrl} />
+            <button
+              onClick={() => handleEditCarSelection(car)}
+              className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => handleDeleteCar(car.id, car.title)}
+              className="bg-red-500 text-white px-4 py-2 rounded"
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 };
