@@ -206,3 +206,57 @@ export const availableFeatures = [
   'Sensore di stabilità',
   'Apple car play',
 ];
+
+export const selectOptions = {
+  'super-car': {
+    kilometres: [
+      { id: '100', label: '100 Km' },
+      { id: '500', label: '500 Km' },
+      { id: '1000', label: ' Km1000' },
+    ],
+    duration: [
+      { id: '1-giorno', label: '1 giorno' },
+      { id: 'weekend', label: 'Week end' },
+      { id: 'settimana', label: 'Settimana' },
+    ],
+    anticipo: [
+      { id: 'cauzione-0', label: 'Cauzione € 0' },
+      { id: 'cauzione-500', label: 'Cauzione € 500' },
+      { id: 'cauzione-1000', label: 'Cauzione € 1000' },
+    ],
+  },
+  'noleggio-breve-termine': {
+    kilometres: [
+      { id: '1500', label: '1500 Km' },
+      { id: '3000', label: '3000 Km' },
+      { id: '4000', label: '4000 Km' },
+    ],
+    duration: [
+      { id: '1-giorno', label: '1 giorno' },
+      { id: '1-settimana', label: '1 settimana' },
+      { id: '1-mese', label: '1 mese' },
+    ],
+    anticipo: [
+      { id: 'cauzione-0', label: 'Cauzione € 0' },
+      { id: 'cauzione-500', label: 'Cauzione € 500' },
+      { id: 'cauzione-1000', label: 'Cauzione € 1000' },
+    ],
+  },
+  'noleggio-lungo-termine': {
+    kilometres: [
+      { id: '10000', label: '10.000 Km' },
+      { id: '15000', label: '15.000 Km' },
+      { id: '20000', label: '20.000 Km' },
+      { id: '30000', label: '30.000 Km' },
+    ],
+    duration: [
+      { id: '36-mesi', label: '36 mesi' },
+      { id: '48-mesi', label: '48 mesi' },
+    ],
+    anticipo: [
+      { id: 'anticipo-0', label: 'Anticipo € 0' },
+      { id: 'anticipo-3700', label: 'Anticipo € 3.700 i.i.' },
+      { id: 'anticipo-5500', label: 'Anticipo € 5.500 i.i.' },
+    ],
+  },
+};

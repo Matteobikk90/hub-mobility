@@ -12,7 +12,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sora: ['"Sora"', 'sans-serif'],
+        Michroma: ['"Michroma"', 'sans-serif'],
       },
       fontWeight: {
         regular: 400,

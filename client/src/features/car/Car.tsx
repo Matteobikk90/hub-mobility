@@ -1,13 +1,16 @@
 import { fetchCarBySlug } from '@/utils/fetches';
+import { selectOptions } from '@/utils/lists';
 import { useQuery } from '@tanstack/react-query';
+import { Euro, Info } from 'lucide-react';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const Car: React.FC = () => {
   const { sectionId, carSlug } = useParams<{
     sectionId: string;
     carSlug: string;
   }>();
+  const navigate = useNavigate();
 
   const {
     data: car,
@@ -27,31 +30,97 @@ export const Car: React.FC = () => {
     );
   if (!car) return <div>Car not found</div>;
 
+  // Get the appropriate select options based on the sectionId
+  const currentOptions = selectOptions[sectionId as keyof typeof selectOptions];
+
   return (
-    <section>
-      <div className="bg-black font-bold text-white flex flex-col gap-4 text-center p-8">
-        <h2 className="text-4xl">{car.title}</h2>
-        <h3 className="text-xl">{car.subtitle}</h3>
-      </div>
+    <section className="container mx-auto p-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center">
+        {/* Left side: Car image */}
+        <div className="relative">
+          <img
+            src={car.imageUrl}
+            alt={car.title}
+            className="w-full h-auto object-cover"
+          />
+          {/* Optional logo or overlay (like in the screenshot) */}
+          <div className="absolute top-4 left-4">
+            {/* Add any logo or additional elements */}
+          </div>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 m-[6rem_auto] max-w-[60rem]">
-        <img
-          src={car.imageUrl}
-          alt={car.title}
-          className="w-full h-96 object-cover rounded-md"
-        />
-        <div>
-          <p className="text-gray-400 mb-2">{car.subtitle}</p>
+        {/* Right side: Form and pricing info */}
+        <div className="bg-white p-8 shadow-lg">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">{car.title}</h2>
+          <p className="text-gray-600 mb-6">{car.subtitle}</p>
 
-          <ul className="text-white text-sm mb-4">
-            {car.features.map((feature: string, index: number) => (
-              <li key={index} className="mb-2">
-                {feature}
-              </li>
-            ))}
-          </ul>
+          <form className="grid grid-cols-1 gap-4">
+            {/* Dropdown for Kilometres */}
+            <div className="mb-4">
+              <label className="block text-black text-sm mb-2">
+                Scegli i km annui inclusi nel contratto
+              </label>
+              <select className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro">
+                {currentOptions.kilometres.map(({ id, label }) => (
+                  <option key={id} value={id}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <p className="text-green-600 text-xl font-semibold">€{car.price}</p>
+            {/* Dropdown for Duration */}
+            <div className="mb-4">
+              <label className="block text-black text-sm mb-2">
+                Scegli la durata del contratto
+              </label>
+              <select className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro">
+                {currentOptions.duration.map(({ id, label }) => (
+                  <option key={id} value={id}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Dropdown for Anticipo */}
+            <div className="mb-4">
+              <label className="block text-black text-sm mb-2">Anticipo</label>
+              <select className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro">
+                {currentOptions.anticipo.map(({ id, label }) => (
+                  <option key={id} value={id}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Pricing info */}
+            <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
+              <Euro size={45} />
+              {car.price} <span className="text-sm">i.i.</span>
+            </div>
+            <p className="text-gray-500 text-sm mb-6 flex items-center gap-2">
+              con servizi inclusi{' '}
+              <a href="#" className="text-azzurro">
+                <Info color="#F8B133" />
+              </a>
+            </p>
+
+            {/* Submit Button */}
+            <button className="w-full bg-azzurro text-white py-3 rounded-md hover:bg-black transition">
+              Richiedi l'offerta
+            </button>
+
+            {/* Back Button */}
+            <button
+              type="button"
+              className="w-full border border-gray-400 text-gray-600 py-3 rounded-md mt-4 hover:bg-gray-100 transition"
+              onClick={() => navigate(`/automobili/${sectionId}`)}
+            >
+              Torna alle Offerte
+            </button>
+          </form>
         </div>
       </div>
     </section>

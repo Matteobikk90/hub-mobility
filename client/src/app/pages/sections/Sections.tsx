@@ -1,5 +1,6 @@
 import { fetchCars } from '@/utils/fetches';
 import { useQuery } from '@tanstack/react-query';
+import { Euro } from 'lucide-react';
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { Link, useParams } from 'react-router-dom';
@@ -50,6 +51,7 @@ export const Section: React.FC = () => {
               alt={car.title}
               className="h-auto object-cover"
             />
+            {console.log(car) as any}
             <h3 className="text-2xl font-bold">{car.title}</h3>
             <p className="font-medium">{car.subtitle}</p>
             <span className="w-full h-[0.125rem] bg-azzurro"></span>
@@ -62,9 +64,10 @@ export const Section: React.FC = () => {
               ))}
             </ul>
             <div className="ml-auto text-right">
-              <div className="border-b-2 pb-2 mb-2 border-b-azzurro max-w-max">
+              <div className="border-b-2 pb-1 mb-1 border-b-azzurro max-w-max flex gap-1 items-end">
                 da
-                <strong className="text-3xl font-medium"> {car.price}€</strong>
+                <strong className="text-3xl font-medium">{car.price}</strong>
+                <Euro size={45} />
               </div>
               al giorno
             </div>
@@ -73,7 +76,7 @@ export const Section: React.FC = () => {
               key={car.id}
               className="flex flex-col justify-between"
             >
-              <button className="text-black border-b-2 border-b-azzurro py-2">
+              <button className="text-black hover:font-bold text-xl border-b-2 border-b-azzurro py-2">
                 Richiedi preventivo
               </button>
             </Link>
