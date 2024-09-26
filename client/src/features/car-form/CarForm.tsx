@@ -30,7 +30,7 @@ export const CarForm: React.FC<CarFormProps> = ({
     onSubmit: (carData, imageFile) => {
       onSubmit(carData, imageFile);
 
-      setCarData({ title: '', subtitle: '', price: 0, features: [] }); // Reset form
+      setCarData({ title: '', subtitle: '', price: '', features: [] }); // Reset form
       setImageFile(null);
     },
   });
@@ -47,17 +47,17 @@ export const CarForm: React.FC<CarFormProps> = ({
   return (
     <div
       ref={formRef}
-      className="mb-8 border p-4 rounded grid grid-cols-1 md:grid-cols-2 gap-4"
+      className="border p-4 rounded grid grid-cols-1 md:grid-cols-2 gap-4"
     >
       <h3 className="text-lg font-semibold col-span-1 md:col-span-2">
-        {editCarId ? 'Edit Car' : 'Add New Car'}
+        {editCarId ? 'Modifica' : 'Aggiungi nuova macchina'}
       </h3>
 
       {/* Title */}
       <input
         type="text"
         name="title"
-        placeholder="Title"
+        placeholder="Titolo"
         value={carData.title || ''}
         onChange={handleChange}
         className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
@@ -67,7 +67,7 @@ export const CarForm: React.FC<CarFormProps> = ({
       <input
         type="text"
         name="subtitle"
-        placeholder="Subtitle"
+        placeholder="Sottotitolo"
         value={carData.subtitle || ''}
         onChange={handleChange}
         className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
@@ -77,8 +77,9 @@ export const CarForm: React.FC<CarFormProps> = ({
       <input
         type="number"
         name="price"
-        placeholder="Price"
-        value={carData.price || 0}
+        placeholder="Prezzo"
+        value={carData.price || ''}
+        min={0}
         onChange={handleNumberChange}
         className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
       />
@@ -117,7 +118,7 @@ export const CarForm: React.FC<CarFormProps> = ({
           onClick={handleSubmit}
           className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-700 transition"
         >
-          {editCarId ? 'Update Car' : 'Add Car'}
+          {editCarId ? 'Aggiorna' : 'Aggiungi'}
         </button>
       </div>
 
@@ -128,7 +129,7 @@ export const CarForm: React.FC<CarFormProps> = ({
             onClick={onCancelEdit}
             className="w-full bg-gray-500 text-white py-3 rounded-md hover:bg-gray-700 transition"
           >
-            Cancel Edit
+            Indietro
           </button>
         </div>
       )}

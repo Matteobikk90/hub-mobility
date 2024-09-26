@@ -1,13 +1,13 @@
 import logo from '@/assets/images/logo.svg';
 import { Navbar } from '@/features/header/components/NavBar';
 import { Menu, X } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = useCallback(() => setIsMenuOpen((prev) => !prev), []);
 
   return (
     <header className="bg-black text-cream-middle p-4 gap-4 flex md:flex-col justify-between items-center">
@@ -30,7 +30,7 @@ export const Header: React.FC = () => {
         )}
       </button>
 
-      <Navbar isMenuOpen={isMenuOpen} />
+      <Navbar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
     </header>
   );
 };

@@ -1,4 +1,5 @@
 import { fetchCars } from '@/utils/fetches';
+import { formatTitle } from '@/utils/formatting';
 import { useQuery } from '@tanstack/react-query';
 import { Euro } from 'lucide-react';
 import React, { useState } from 'react';
@@ -40,7 +41,7 @@ export const Section: React.FC = () => {
   return (
     <section className="max-w-[78rem] mx-auto p-8">
       <h2 className="text-4xl font-bold text-black mb-8 text-center">
-        {sectionId}
+        {formatTitle(sectionId!)}
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 justify-between gap-8">
@@ -49,7 +50,7 @@ export const Section: React.FC = () => {
             <img
               src={car.imageUrl}
               alt={car.title}
-              className="h-auto object-cover"
+              className="h-auto object-cover max-h-[22.5rem]"
             />
             {console.log(car) as any}
             <h3 className="text-2xl font-bold">{car.title}</h3>

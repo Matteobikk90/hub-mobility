@@ -115,7 +115,7 @@ export const Car: React.FC = () => {
             {/* Back Button */}
             <button
               type="button"
-              className="w-full border border-gray-400 text-gray-600 py-3 rounded-md mt-4 hover:bg-gray-100 transition"
+              className="w-full border border-gray-400 text-gray-600 py-3 rounded-md  hover:bg-gray-100 transition"
               onClick={() => navigate(`/automobili/${sectionId}`)}
             >
               Torna alle Offerte

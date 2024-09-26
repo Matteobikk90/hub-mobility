@@ -1,11 +1,32 @@
-import { db } from '@/firebase';
+import { db, storage } from '@/firebase'; // Import storage from your firebase.ts
 import { useToast } from '@/hooks/useToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteDoc, doc } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc } from 'firebase/firestore';
+import { deleteObject, ref } from 'firebase/storage'; // Firebase Storage methods
 
-// Function to delete a car
+// Function to delete a car from Firestore and its image from Firebase Storage
 const handleDeleteCar = async (carId: string, sectionId: string) => {
   const carDocRef = doc(db, sectionId, carId);
+
+  // Get the car data to retrieve the image URL
+  const carDoc = await getDoc(carDocRef);
+  const carData = carDoc.data();
+
+  if (carData && carData.imageUrl) {
+    // Create a reference to the file to delete
+    const imageRef = ref(storage, carData.imageUrl);
+
+    // Delete the image from storage
+    await deleteObject(imageRef)
+      .then(() => {
+        console.log('Image deleted successfully');
+      })
+      .catch((error) => {
+        console.error('Error deleting image:', error);
+      });
+  }
+
+  // Delete the car document from Firestore
   await deleteDoc(carDocRef);
 };
 
