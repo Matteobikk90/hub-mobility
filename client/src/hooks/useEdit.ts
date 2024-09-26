@@ -60,7 +60,7 @@ export const useEditCar = (sectionId: string) => {
       queryClient.invalidateQueries({
         queryKey: ['cars', sectionId],
         refetchType: 'all',
-        type: 'active',
+        type: 'all',
       });
       showSuccess('Car updated successfully!'); // Show success toast
     },

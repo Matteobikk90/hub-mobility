@@ -6,7 +6,6 @@ import { addDoc, collection } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 
 // Function to handle adding a new car
-// Function to handle adding a new car
 const handleAddCar = async (
   carData: Partial<Car>,
   sectionId: string,
@@ -41,7 +40,6 @@ const handleAddCar = async (
 };
 
 // UseMutation hook for adding a new car
-// UseMutation hook for adding a new ca
 export const useAddCar = (sectionId: string) => {
   const queryClient = useQueryClient();
   const { showSuccess, showError } = useToast(); // Access the toast functions

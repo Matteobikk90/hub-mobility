@@ -5,36 +5,43 @@ export const navbarLinks: {
   id: string;
   name: string;
   path: string;
+  color: string;
 }[] = [
   {
     id: 'long',
     name: 'Noleggio Lungo Termine',
     path: 'noleggio-lungo-termine',
+    color: '#F8B133',
   },
   {
     id: 'short',
     name: 'Noleggio Breve Termine',
     path: 'noleggio-breve-termine',
+    color: '#F8B133',
   },
   {
     id: 'super',
     name: 'Super Car',
     path: 'super-car',
+    color: '#8B0000',
   },
   {
     id: 'carrozzeria',
     name: 'Carrozzeria / Cristalli',
     path: 'carrozzeria-cristalli',
+    color: '#002366',
   },
   {
     id: 'officina',
     name: 'Officina / Gommista',
     path: 'officina-gommista',
+    color: '#333333',
   },
   {
     id: 'assicurazioni',
     name: 'Assicurazioni',
     path: 'assicurazioni',
+    color: '#038E38',
   },
 ];
 

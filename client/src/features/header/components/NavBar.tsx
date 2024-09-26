@@ -12,7 +12,7 @@ export const Navbar = ({
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className="hidden md:flex items-center justify-around w-full mb-6">
+      <nav className="hidden md:flex items-center justify-around w-full">
         {renderNavBarLinks(false, toggleMenu)} {/* Passing false for desktop */}
       </nav>
 
