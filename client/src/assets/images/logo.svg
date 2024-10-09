@@ -26,11 +26,6 @@
     </clipPath>
   </defs>
   <g transform="matrix(1.3333333,0,0,-1.3333333,0,326.66667)" id="g10">
-    <path
-      id="path12"
-      style="fill: #000000; fill-opacity: 1; fill-rule: nonzero; stroke: none"
-      d="M 0,0 H 1080 V 245 H 0 Z"
-    />
     <g transform="translate(743.006,206.2171)" id="g14">
       <path
         id="path16"

@@ -267,3 +267,21 @@ export const selectOptions = {
     ],
   },
 };
+
+export const services = [
+  { img: '', text: 'Presenza diffusa in tutta Italia' },
+  {
+    img: '',
+    text: 'Auto di Cortesia Inclusa e gratuita, Servizio di Bisarca su tutto il territorio',
+  },
+  { img: '', text: 'Pulizia e Igienizzazione Completa della vettura' },
+  { img: '', text: 'Riparazione Veloce: Tecnica a Freddo in 24 Ore' },
+  {
+    img: '',
+    text: 'Sicurezza certificata con la Nostra Garanzia sulle riparazioni',
+  },
+  {
+    img: '',
+    text: 'Vernice Originale inalterata e 100% Ecologico',
+  },
+];
