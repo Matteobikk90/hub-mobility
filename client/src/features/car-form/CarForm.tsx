@@ -30,7 +30,13 @@ export const CarForm: React.FC<CarFormProps> = ({
     onSubmit: (carData, imageFile) => {
       onSubmit(carData, imageFile);
 
-      setCarData({ title: '', subtitle: '', price: '', features: [] }); // Reset form
+      setCarData({
+        title: '',
+        subtitle: '',
+        price: '',
+        features: [],
+        transmission: 'Manuale',
+      }); // Reset form
       setImageFile(null);
     },
   });
@@ -86,7 +92,7 @@ export const CarForm: React.FC<CarFormProps> = ({
 
       {/* Features Checkboxes */}
       <div className="col-span-1 md:col-span-2">
-        <h4 className="mb-2">Features</h4>
+        <h4 className="mb-2">Accessori</h4>
         <div className="grid grid-cols-2 gap-2">
           {availableFeatures.map((feature) => (
             <label key={feature} className="flex items-center">
@@ -102,9 +108,38 @@ export const CarForm: React.FC<CarFormProps> = ({
         </div>
       </div>
 
+      {/* Transmission Radio Input */}
+      <div className="col-span-1 md:col-span-2">
+        <h4 className="mb-2">Tipo di Trasmissione</h4>
+        <div className="flex items-center gap-4">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="transmission"
+              value="Automatico"
+              checked={carData.transmission === 'Automatico'}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            Automatico
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="transmission"
+              value="Manuale"
+              checked={carData.transmission === 'Manuale'}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            Manuale
+          </label>
+        </div>
+      </div>
+
       {/* Image Upload */}
       <div className="col-span-1 md:col-span-2">
-        <label className="block text-black text-sm mb-2">Upload Image</label>
+        <label className="block text-black text-sm mb-2">Carica immagine</label>
         <input
           type="file"
           onChange={handleFileChange}

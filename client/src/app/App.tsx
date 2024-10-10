@@ -1,4 +1,5 @@
 import AppWrapper from '@/app/AppWrapper';
+import { Loader } from '@/components/loader';
 import { auth } from '@/firebase';
 import { useToast } from '@/hooks/useToast';
 import {
@@ -57,7 +58,7 @@ const App: React.FC = () => {
 
   if (authLoading) {
     // You can add a loading spinner here if needed
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (

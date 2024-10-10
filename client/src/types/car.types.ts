@@ -6,7 +6,7 @@ export type Car = {
   imageUrl: string;
   features: string[];
   price: number | string;
-  transmission: 'manual' | 'automatic';
+  transmission: 'Manuale' | 'Automatico';
 };
 
 export type UpdatedCarData = {
@@ -16,5 +16,5 @@ export type UpdatedCarData = {
   price?: number | string;
   features?: string[];
   imageUrl?: string;
-  transmission: 'manual' | 'automatic';
+  transmission: 'Manuale' | 'Automatico';
 };

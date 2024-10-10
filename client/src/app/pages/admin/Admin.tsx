@@ -1,3 +1,4 @@
+import { Loader } from '@/components/loader';
 import CarForm from '@/features/car-form';
 import { auth, db, storage } from '@/firebase';
 import { useAddCar } from '@/hooks/useAdd';
@@ -18,6 +19,7 @@ export const Admin: React.FC = () => {
   const [sectionId, setSectionId] = useState('noleggio-lungo-termine');
   const [cars, setCars] = useState<Car[]>([]);
   const [editCarId, setEditCarId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const { mutate: deleteCar } = useDeleteCar(sectionId);
   const { mutate: editCar } = useEditCar(sectionId);
@@ -49,14 +51,30 @@ export const Admin: React.FC = () => {
     carData: Partial<Car>,
     imageFile: File | null
   ) => {
+    setLoading(true);
     const slug = generateSlug(carData.title || '');
 
     if (editCarId) {
-      const updatedCarData: Partial<Car> = {
+      let updatedCarData: Partial<Car> = {
         ...carData,
         slug,
         features: carData.features || [],
       };
+
+      if (imageFile) {
+        // Step 1: Upload image to Firebase Storage
+        const imageRef = ref(storage, `cars/${slug}-${imageFile.name}`);
+        await uploadBytes(imageRef, imageFile);
+
+        // Step 2: Get the download URL of the uploaded image
+        const imageUrl = await getDownloadURL(imageRef);
+
+        // Include the new image URL in the updated car data
+        updatedCarData = {
+          ...updatedCarData,
+          imageUrl,
+        };
+      }
 
       editCar(
         {
@@ -71,7 +89,8 @@ export const Admin: React.FC = () => {
                 car.id === editCarId ? { ...car, ...updatedCarData } : car
               )
             );
-            setEditCarId(null);
+            setEditCarId(null); // Reset the edit mode
+            setLoading(false);
           },
         }
       );
@@ -108,10 +127,11 @@ export const Admin: React.FC = () => {
                   imageUrl: newCarData.imageUrl || '', // Make sure the imageUrl is set here
                   features: newCarData.features || [],
                   price: newCarData.price ?? '',
-                  transmission: newCarData.transmission || 'manual',
+                  transmission: newCarData.transmission || 'Manuale',
                 },
                 ...prevCars,
               ]);
+              setLoading(false);
             },
           }
         );
@@ -139,10 +159,11 @@ export const Admin: React.FC = () => {
                   imageUrl: '', // No image
                   features: newCarData.features || [],
                   price: newCarData.price ?? '',
-                  transmission: newCarData.transmission || 'manual',
+                  transmission: newCarData.transmission || 'Manuale',
                 },
                 ...prevCars,
               ]);
+              setLoading(false);
             },
           }
         );
@@ -172,7 +193,7 @@ export const Admin: React.FC = () => {
   return (
     <section className="container mx-auto p-4">
       <h2 className="text-3xl font-semibold mb-4">
-        Panello di controllo - {sectionId}
+        Panello di controllo - {sectionId.replaceAll('-', ' ')}
       </h2>
       <div className="flex justify-between items-center mb-4">
         <select
@@ -193,7 +214,6 @@ export const Admin: React.FC = () => {
           Logout
         </button>
       </div>
-
       {/* Display existing cars in the section */}
       <ul className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
         <CarForm
@@ -204,36 +224,48 @@ export const Admin: React.FC = () => {
           onSubmit={handleCarSubmit}
           onCancelEdit={clearForm}
         />
-        {cars.map((car) => (
-          <li
-            key={car.id}
-            className="flex flex-col gap-3 border p-4 rounded justify-between"
-          >
-            <h4 className="text-lg font-bold">{car.title}</h4>
-            <p className="flex justify-between items-center">
-              <span>{car.subtitle}</span>
-              <span className="flex">
-                <Euro /> {car.price}
-              </span>
-            </p>
-            <p className="text-sm">{car.features.join(', ')}</p>
-            <img className="w-full" alt={car.title} src={car.imageUrl} />
-            <div className="grid grid-cols-2 items-center gap-4">
-              <button
-                onClick={() => handleEditCarSelection(car)}
-                className="bg-yellow-500 text-white px-6 py-2 rounded"
-              >
-                Modifica
-              </button>
-              <button
-                onClick={() => handleDeleteCar(car.id, car.title)}
-                className="bg-red-500 text-white px-6 py-2 rounded"
-              >
-                Cancella
-              </button>
-            </div>
-          </li>
-        ))}
+
+        {loading ? (
+          <Loader />
+        ) : (
+          cars.map((car) => (
+            <li
+              key={car.id}
+              className="flex flex-col gap-3 border p-4 rounded justify-between"
+            >
+              <h4 className="text-lg font-bold">{car.title}</h4>
+              <p className="flex justify-between items-center">
+                <span>{car.subtitle}</span>
+                <span className="flex">
+                  <Euro /> {car.price}
+                </span>
+              </p>
+              <p className="text-sm">
+                <strong className="font-bold">Accessori:</strong>{' '}
+                {car.features.join(', ')}
+              </p>
+              <p className="text-sm">
+                <strong className="font-bold">Trasmissione:</strong>{' '}
+                {car.transmission}
+              </p>
+              <img className="w-full" alt={car.title} src={car.imageUrl} />
+              <div className="grid grid-cols-2 items-center gap-4">
+                <button
+                  onClick={() => handleEditCarSelection(car)}
+                  className="bg-yellow-500 text-white px-6 py-2 rounded"
+                >
+                  Modifica
+                </button>
+                <button
+                  onClick={() => handleDeleteCar(car.id, car.title)}
+                  className="bg-red-500 text-white px-6 py-2 rounded"
+                >
+                  Cancella
+                </button>
+              </div>
+            </li>
+          ))
+        )}
       </ul>
     </section>
   );
