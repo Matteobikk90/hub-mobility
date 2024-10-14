@@ -116,7 +116,7 @@ export const Car: React.FC = () => {
             {/* Pricing info */}
             <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
               <Euro size={45} />
-              {car.price[selectedIndex]} <span className="text-sm">i.i.</span>
+              {car.prices[selectedIndex]} <span className="text-sm">i.i.</span>
             </div>
             <p className="text-gray-500 text-sm mb-6 flex items-center gap-2">
               con servizi inclusi{' '}

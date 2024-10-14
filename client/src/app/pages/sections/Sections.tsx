@@ -70,7 +70,7 @@ export const Section: React.FC = () => {
                   <div className="border-b-2 pb-1 mb-1 border-b-azzurro max-w-max flex gap-1 items-end">
                     da
                     <strong className="text-3xl font-medium">
-                      {car.price}
+                      {car.prices?.[0] ?? 'N/A'}
                     </strong>
                     <Euro size={45} />
                   </div>

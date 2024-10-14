@@ -7,7 +7,8 @@ type CarFormProps = {
   initialCarData?: Partial<Car>;
   editCarId?: string | null;
   onSubmit: (carData: Partial<Car>, imageFile: File | null) => void;
-  onCancelEdit: () => void; // Function to handle cancelling edit
+  onCancelEdit: () => void;
+  sectionId: string; // Pass sectionId to know which section we're in
 };
 
 export const CarForm: React.FC<CarFormProps> = ({
@@ -15,11 +16,11 @@ export const CarForm: React.FC<CarFormProps> = ({
   editCarId,
   onSubmit,
   onCancelEdit,
+  sectionId,
 }) => {
   const {
     carData,
     handleChange,
-    handleNumberChange,
     handleFileChange,
     handleSubmit,
     setCarData,
@@ -33,13 +34,23 @@ export const CarForm: React.FC<CarFormProps> = ({
       setCarData({
         title: '',
         subtitle: '',
-        price: '',
+        prices: ['', '', ''], // Reset prices as an empty array
         features: [],
         transmission: 'Manuale',
-      }); // Reset form
+      });
       setImageFile(null);
     },
   });
+
+  // Handle multiple price changes
+  const handlePriceChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const updatedPrices = [...(carData.prices || ['', '', ''])];
+    updatedPrices[index] = e.target.value;
+    setCarData({ ...carData, prices: updatedPrices });
+  };
 
   // Scroll to the form when editing
   const formRef = useRef<HTMLDivElement>(null);
@@ -79,16 +90,44 @@ export const CarForm: React.FC<CarFormProps> = ({
         className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
       />
 
-      {/* Price */}
-      <input
-        type="number"
-        name="price"
-        placeholder="Prezzo"
-        value={carData.price || ''}
-        min={0}
-        onChange={handleNumberChange}
-        className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
-      />
+      {/* Prices */}
+      {sectionId === 'super-car' || sectionId === 'noleggio-breve-termine' ? (
+        <>
+          <input
+            type="number"
+            name="price1"
+            placeholder="Prezzo 1"
+            value={carData.prices?.[0] || ''}
+            onChange={(e) => handlePriceChange(e, 0)}
+            className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+          />
+          <input
+            type="number"
+            name="price2"
+            placeholder="Prezzo 2"
+            value={carData.prices?.[1] || ''}
+            onChange={(e) => handlePriceChange(e, 1)}
+            className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+          />
+          <input
+            type="number"
+            name="price3"
+            placeholder="Prezzo 3"
+            value={carData.prices?.[2] || ''}
+            onChange={(e) => handlePriceChange(e, 2)}
+            className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+          />
+        </>
+      ) : (
+        <input
+          type="number"
+          name="price"
+          placeholder="Prezzo"
+          value={carData.prices?.[0] || ''}
+          onChange={(e) => handlePriceChange(e, 0)}
+          className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+        />
+      )}
 
       {/* Features Checkboxes */}
       <div className="col-span-1 md:col-span-2">

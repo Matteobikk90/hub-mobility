@@ -59,17 +59,14 @@ export const Admin: React.FC = () => {
         ...carData,
         slug,
         features: carData.features || [],
+        prices: carData.prices || ['', '', ''], // Ensure prices array is present
       };
 
       if (imageFile) {
-        // Step 1: Upload image to Firebase Storage
         const imageRef = ref(storage, `cars/${slug}-${imageFile.name}`);
         await uploadBytes(imageRef, imageFile);
-
-        // Step 2: Get the download URL of the uploaded image
         const imageUrl = await getDownloadURL(imageRef);
 
-        // Include the new image URL in the updated car data
         updatedCarData = {
           ...updatedCarData,
           imageUrl,
@@ -89,26 +86,24 @@ export const Admin: React.FC = () => {
                 car.id === editCarId ? { ...car, ...updatedCarData } : car
               )
             );
-            setEditCarId(null); // Reset the edit mode
+            setEditCarId(null);
             setLoading(false);
           },
         }
       );
     } else {
-      // Add new car
+      // Adding new car
       if (imageFile) {
-        // Step 1: Upload image to Firebase Storage
         const imageRef = ref(storage, `cars/${slug}-${imageFile.name}`);
         await uploadBytes(imageRef, imageFile);
-
-        // Step 2: Get the download URL of the uploaded image
         const imageUrl = await getDownloadURL(imageRef);
 
         const newCarData: Partial<Car> = {
           ...carData,
           slug,
-          imageUrl, // Add the image URL to the car data
+          imageUrl,
           features: carData.features || [],
+          prices: carData.prices || ['', '', ''], // Ensure prices array is initialized
         };
 
         addCar(
@@ -124,41 +119,9 @@ export const Admin: React.FC = () => {
                   title: newCarData.title || '',
                   subtitle: newCarData.subtitle || '',
                   slug: newCarData.slug || '',
-                  imageUrl: newCarData.imageUrl || '', // Make sure the imageUrl is set here
+                  imageUrl: newCarData.imageUrl || '',
                   features: newCarData.features || [],
-                  price: newCarData.price ?? '',
-                  transmission: newCarData.transmission || 'Manuale',
-                },
-                ...prevCars,
-              ]);
-              setLoading(false);
-            },
-          }
-        );
-      } else {
-        // If no image is provided, handle as usual without uploading an image
-        const newCarData: Partial<Car> = {
-          ...carData,
-          slug,
-          features: carData.features || [],
-        };
-
-        addCar(
-          {
-            carData: newCarData,
-            imageFile,
-          },
-          {
-            onSuccess: (newCar) => {
-              setCars((prevCars) => [
-                {
-                  id: newCar.id,
-                  title: newCarData.title || '',
-                  subtitle: newCarData.subtitle || '',
-                  slug: newCarData.slug || '',
-                  imageUrl: '', // No image
-                  features: newCarData.features || [],
-                  price: newCarData.price ?? '',
+                  prices: newCarData.prices ?? ['', '', ''], // Initialize prices if missing
                   transmission: newCarData.transmission || 'Manuale',
                 },
                 ...prevCars,
@@ -223,6 +186,7 @@ export const Admin: React.FC = () => {
           editCarId={editCarId}
           onSubmit={handleCarSubmit}
           onCancelEdit={clearForm}
+          sectionId={sectionId}
         />
 
         {loading ? (
@@ -234,12 +198,18 @@ export const Admin: React.FC = () => {
               className="flex flex-col gap-3 border p-4 rounded justify-between"
             >
               <h4 className="text-lg font-bold">{car.title}</h4>
-              <p className="flex justify-between items-center">
-                <span>{car.subtitle}</span>
-                <span className="flex">
-                  <Euro /> {car.price}
-                </span>
-              </p>
+              <p>{car.subtitle}</p>
+
+              {/* Display all prices */}
+              {car.prices?.map((price, index) => (
+                <p key={index} className="flex justify-between items-center">
+                  <span>Prezzo {index + 1}:</span>
+                  <span className="flex">
+                    <Euro /> {price}
+                  </span>
+                </p>
+              ))}
+
               <p className="text-sm">
                 <strong className="font-bold">Accessori:</strong>{' '}
                 {car.features.join(', ')}
@@ -249,6 +219,7 @@ export const Admin: React.FC = () => {
                 {car.transmission}
               </p>
               <img className="w-full" alt={car.title} src={car.imageUrl} />
+
               <div className="grid grid-cols-2 items-center gap-4">
                 <button
                   onClick={() => handleEditCarSelection(car)}
