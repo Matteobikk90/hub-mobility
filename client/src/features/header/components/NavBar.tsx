@@ -18,9 +18,9 @@ export const Navbar = ({
 
       {/* Mobile Navigation */}
       <nav
-        className={`z-10 fixed lg:hidden flex h-[calc(100%-6.8rem)] top-0 left-0 justify-evenly bg-black text-white flex-col items-center w-full transition-all duration-500 ease-in-out transform gap-3 ${
+        className={`z-10 fixed lg:hidden flex h-[calc(100%-6.3rem)] top-0 left-0 justify-evenly bg-black text-white flex-col items-center w-full transition-all duration-500 ease-in-out transform gap-3 ${
           isMenuOpen
-            ? 'opacity-100 translate-y-[6.8rem]'
+            ? 'opacity-100 translate-y-[6.3rem]'
             : 'opacity-0 -translate-y-full'
         }`}
       >

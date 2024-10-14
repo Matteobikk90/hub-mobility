@@ -217,26 +217,26 @@ export const availableFeatures = [
 export const selectOptions = {
   'super-car': {
     kilometres: [
-      { id: '100', label: '100 Km' },
+      { id: '200', label: '200 Km' },
       { id: '500', label: '500 Km' },
-      { id: '1000', label: ' Km1000' },
+      { id: '700', label: '700 Km' },
     ],
     duration: [
       { id: '1-giorno', label: '1 giorno' },
-      { id: 'weekend', label: 'Week end' },
+      { id: 'weekend', label: '1 settimana' },
       { id: 'settimana', label: 'Settimana' },
     ],
     anticipo: [
-      { id: 'cauzione-0', label: 'Cauzione € 0' },
-      { id: 'cauzione-500', label: 'Cauzione € 500' },
-      { id: 'cauzione-1000', label: 'Cauzione € 1000' },
+      { id: 'cauzione-500', label: 'Cauzione € 5000' },
+      { id: 'cauzione-500', label: 'Cauzione € 5000' },
+      { id: 'cauzione-1000', label: 'Cauzione € 10000' },
     ],
   },
   'noleggio-breve-termine': {
     kilometres: [
+      { id: '100', label: '100 Km' },
+      { id: '500', label: '500 Km' },
       { id: '1500', label: '1500 Km' },
-      { id: '3000', label: '3000 Km' },
-      { id: '4000', label: '4000 Km' },
     ],
     duration: [
       { id: '1-giorno', label: '1 giorno' },
@@ -251,9 +251,7 @@ export const selectOptions = {
   },
   'noleggio-lungo-termine': {
     kilometres: [
-      { id: '10000', label: '10.000 Km' },
       { id: '15000', label: '15.000 Km' },
-      { id: '20000', label: '20.000 Km' },
       { id: '30000', label: '30.000 Km' },
     ],
     duration: [
@@ -262,8 +260,8 @@ export const selectOptions = {
     ],
     anticipo: [
       { id: 'anticipo-0', label: 'Anticipo € 0' },
-      { id: 'anticipo-3700', label: 'Anticipo € 3.700 i.i.' },
-      { id: 'anticipo-5500', label: 'Anticipo € 5.500 i.i.' },
+      { id: 'anticipo-2500', label: 'Anticipo € 2.500 i.i.' },
+      { id: 'anticipo-5000', label: 'Anticipo € 500 i.i.' },
     ],
   },
 };
