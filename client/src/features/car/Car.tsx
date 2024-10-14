@@ -21,6 +21,10 @@ export const Car: React.FC = () => {
     queryFn: () => fetchCarBySlug(sectionId!, carSlug!),
   });
 
+  // States for each dropdown selection
+  const [selectedKilometres, setSelectedKilometres] = useState(0);
+  const [selectedDuration, setSelectedDuration] = useState(0);
+  const [selectedAnticipo, setSelectedAnticipo] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   if (isLoading) return <div>Loading car details...</div>;
@@ -35,12 +39,22 @@ export const Car: React.FC = () => {
   // Get the appropriate select options based on the sectionId
   const currentOptions = selectOptions[sectionId as keyof typeof selectOptions];
 
-  // Function to handle selection and synchronize the index across all dropdowns
+  // Function to compute the price index for "noleggio-lungo-termine"
+  const getLungoTerminePriceIndex = () => {
+    const durationCount = currentOptions.duration.length;
+    const anticipoCount = currentOptions.anticipo.length;
+
+    return (
+      selectedKilometres * (durationCount * anticipoCount) +
+      selectedDuration * anticipoCount +
+      selectedAnticipo
+    );
+  };
+
+  // Function to handle the change of dropdowns for synced sections
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const index = Number(e.target.value);
-    if (sectionId === 'super-car' || sectionId === 'noleggio-breve-termine') {
-      setSelectedIndex(index);
-    }
+    setSelectedIndex(index);
   };
 
   return (
@@ -61,63 +75,139 @@ export const Car: React.FC = () => {
           <p className="text-gray-600 mb-6">{car.subtitle}</p>
 
           <form className="grid grid-cols-1 gap-4">
-            {/* Dropdown for Kilometres */}
-            <div className="mb-4">
-              <label className="block text-black text-sm mb-2">
-                Scegli i km annui inclusi nel contratto
-              </label>
-              <select
-                className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                value={selectedIndex}
-                onChange={handleSelectionChange}
-              >
-                {currentOptions.kilometres.map(({ id, label }, index) => (
-                  <option key={id} value={index}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* For "noleggio-lungo-termine", the dropdowns are not synchronized */}
+            {sectionId === 'noleggio-lungo-termine' ? (
+              <>
+                {/* Dropdown for Kilometres */}
+                <div className="mb-4">
+                  <label className="block text-black text-sm mb-2">
+                    Scegli i km annui inclusi nel contratto
+                  </label>
+                  <select
+                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                    value={selectedKilometres}
+                    onChange={(e) =>
+                      setSelectedKilometres(Number(e.target.value))
+                    }
+                  >
+                    {currentOptions.kilometres.map(({ id, label }, index) => (
+                      <option key={id} value={index}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            {/* Dropdown for Duration */}
-            <div className="mb-4">
-              <label className="block text-black text-sm mb-2">
-                Scegli la durata del contratto
-              </label>
-              <select
-                className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                value={selectedIndex}
-                onChange={handleSelectionChange}
-              >
-                {currentOptions.duration.map(({ id, label }, index) => (
-                  <option key={id} value={index}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                {/* Dropdown for Duration */}
+                <div className="mb-4">
+                  <label className="block text-black text-sm mb-2">
+                    Scegli la durata del contratto
+                  </label>
+                  <select
+                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                    value={selectedDuration}
+                    onChange={(e) =>
+                      setSelectedDuration(Number(e.target.value))
+                    }
+                  >
+                    {currentOptions.duration.map(({ id, label }, index) => (
+                      <option key={id} value={index}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            {/* Dropdown for Anticipo */}
-            <div className="mb-4">
-              <label className="block text-black text-sm mb-2">Anticipo</label>
-              <select
-                className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                value={selectedIndex}
-                onChange={handleSelectionChange}
-              >
-                {currentOptions.anticipo.map(({ id, label }, index) => (
-                  <option key={id} value={index}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                {/* Dropdown for Anticipo */}
+                <div className="mb-4">
+                  <label className="block text-black text-sm mb-2">
+                    Cauzione
+                  </label>
+                  <select
+                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                    value={selectedAnticipo}
+                    onChange={(e) =>
+                      setSelectedAnticipo(Number(e.target.value))
+                    }
+                  >
+                    {currentOptions.anticipo.map(({ id, label }, index) => (
+                      <option key={id} value={index}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            {/* Pricing info */}
-            <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
-              <Euro size={45} />
-              {car.prices[selectedIndex]} <span className="text-sm">i.i.</span>
-            </div>
+                {/* Pricing info based on the selected combination */}
+                <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
+                  <Euro size={45} />
+                  {car.prices?.[getLungoTerminePriceIndex()] || 'N/A'}{' '}
+                  <span className="text-sm">i.i.</span>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* For "super-car" and "noleggio-breve-termine", the dropdowns are synchronized */}
+                <div className="mb-4">
+                  <label className="block text-black text-sm mb-2">
+                    Scegli i km annui inclusi nel contratto
+                  </label>
+                  <select
+                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                    value={selectedIndex}
+                    onChange={handleSelectionChange}
+                  >
+                    {currentOptions.kilometres.map(({ id, label }, index) => (
+                      <option key={id} value={index}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-black text-sm mb-2">
+                    Scegli la durata del contratto
+                  </label>
+                  <select
+                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                    value={selectedIndex}
+                    onChange={handleSelectionChange}
+                  >
+                    {currentOptions.duration.map(({ id, label }, index) => (
+                      <option key={id} value={index}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-black text-sm mb-2">
+                    Anticipo
+                  </label>
+                  <select
+                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                    value={selectedIndex}
+                    onChange={handleSelectionChange}
+                  >
+                    {currentOptions.anticipo.map(({ id, label }, index) => (
+                      <option key={id} value={index}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Pricing info based on the synchronized dropdown */}
+                <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
+                  <Euro size={45} />
+                  {car.prices?.[selectedIndex] || 'N/A'}{' '}
+                  <span className="text-sm">i.i.</span>
+                </div>
+              </>
+            )}
+
             <p className="text-gray-500 text-sm mb-6 flex items-center gap-2">
               con servizi inclusi{' '}
               <a href="#" className="text-azzurro">

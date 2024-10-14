@@ -1,6 +1,6 @@
 import { useCarForm } from '@/features/car-form/hooks/useCarForm';
 import { Car } from '@/types/car.types';
-import { availableFeatures } from '@/utils/lists';
+import { availableFeatures, selectOptions } from '@/utils/lists';
 import React, { useEffect, useRef } from 'react';
 
 type CarFormProps = {
@@ -34,23 +34,13 @@ export const CarForm: React.FC<CarFormProps> = ({
       setCarData({
         title: '',
         subtitle: '',
-        prices: ['', '', ''], // Reset prices as an empty array
+        prices: [],
         features: [],
         transmission: 'Manuale',
       });
       setImageFile(null);
     },
   });
-
-  // Handle multiple price changes
-  const handlePriceChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const updatedPrices = [...(carData.prices || ['', '', ''])];
-    updatedPrices[index] = e.target.value;
-    setCarData({ ...carData, prices: updatedPrices });
-  };
 
   // Scroll to the form when editing
   const formRef = useRef<HTMLDivElement>(null);
@@ -60,6 +50,33 @@ export const CarForm: React.FC<CarFormProps> = ({
       formRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [editCarId]);
+
+  // Generate all combinations of kilometres, duration, and anticipo for "noleggio-lungo-termine"
+  const generatePriceCombinations = () => {
+    const kilometriOptions = selectOptions['noleggio-lungo-termine'].kilometres;
+    const durationOptions = selectOptions['noleggio-lungo-termine'].duration;
+    const anticipoOptions = selectOptions['noleggio-lungo-termine'].anticipo;
+
+    const combinations = [];
+    for (const kilometri of kilometriOptions) {
+      for (const duration of durationOptions) {
+        for (const anticipo of anticipoOptions) {
+          combinations.push({ kilometri, duration, anticipo });
+        }
+      }
+    }
+    return combinations;
+  };
+
+  // Handle multiple price changes
+  const handlePriceChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const updatedPrices = [...(carData.prices || [])];
+    updatedPrices[index] = e.target.value;
+    setCarData({ ...carData, prices: updatedPrices });
+  };
 
   return (
     <div
@@ -119,14 +136,24 @@ export const CarForm: React.FC<CarFormProps> = ({
           />
         </>
       ) : (
-        <input
-          type="number"
-          name="price"
-          placeholder="Prezzo"
-          value={carData.prices?.[0] || ''}
-          onChange={(e) => handlePriceChange(e, 0)}
-          className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
-        />
+        <>
+          {generatePriceCombinations().map((combination, index) => (
+            <div key={index} className="col-span-1 md:col-span-2">
+              <label className="block text-xs">
+                Prezzo per {combination.kilometri.label},{' '}
+                {combination.duration.label}, {combination.anticipo.label}
+              </label>
+              <input
+                type="number"
+                name={`price-${index}`}
+                placeholder={`Prezzo per ${combination.kilometri.label}, ${combination.duration.label}, ${combination.anticipo.label}`}
+                value={carData.prices?.[index] || ''}
+                onChange={(e) => handlePriceChange(e, index)}
+                className="p-1 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+              />
+            </div>
+          ))}
+        </>
       )}
 
       {/* Features Checkboxes */}

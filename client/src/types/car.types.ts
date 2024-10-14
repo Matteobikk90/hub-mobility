@@ -5,7 +5,7 @@ export type Car = {
   slug: string;
   imageUrl: string;
   features: string[];
-  prices: string[]; // Changed price to prices (array of strings)
+  prices: string[];
   transmission: 'Manuale' | 'Automatico';
 };
 
@@ -13,7 +13,7 @@ export type UpdatedCarData = {
   title?: string;
   subtitle?: string;
   slug: string;
-  price?: number | string;
+  prices: string[];
   features?: string[];
   imageUrl?: string;
   transmission: 'Manuale' | 'Automatico';

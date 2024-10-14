@@ -227,16 +227,16 @@ export const selectOptions = {
       { id: 'settimana', label: 'Settimana' },
     ],
     anticipo: [
-      { id: 'cauzione-500', label: 'Cauzione € 5000' },
-      { id: 'cauzione-500', label: 'Cauzione € 5000' },
-      { id: 'cauzione-1000', label: 'Cauzione € 10000' },
+      { id: 'cauzione-500', label: 'Cauzione € 5.000' },
+      { id: 'cauzione-500', label: 'Cauzione € 5.000' },
+      { id: 'cauzione-1000', label: 'Cauzione € 10.000' },
     ],
   },
   'noleggio-breve-termine': {
     kilometres: [
       { id: '100', label: '100 Km' },
       { id: '500', label: '500 Km' },
-      { id: '1500', label: '1500 Km' },
+      { id: '1500', label: '1.500 Km' },
     ],
     duration: [
       { id: '1-giorno', label: '1 giorno' },
@@ -246,7 +246,7 @@ export const selectOptions = {
     anticipo: [
       { id: 'cauzione-0', label: 'Cauzione € 0' },
       { id: 'cauzione-500', label: 'Cauzione € 500' },
-      { id: 'cauzione-1000', label: 'Cauzione € 1000' },
+      { id: 'cauzione-1000', label: 'Cauzione € 1.000' },
     ],
   },
   'noleggio-lungo-termine': {
@@ -261,7 +261,7 @@ export const selectOptions = {
     anticipo: [
       { id: 'anticipo-0', label: 'Anticipo € 0' },
       { id: 'anticipo-2500', label: 'Anticipo € 2.500 i.i.' },
-      { id: 'anticipo-5000', label: 'Anticipo € 500 i.i.' },
+      { id: 'anticipo-5000', label: 'Anticipo € 5.000 i.i.' },
     ],
   },
 };
