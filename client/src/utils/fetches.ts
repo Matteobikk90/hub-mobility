@@ -11,7 +11,7 @@ export const fetchCars = async (sectionId: string): Promise<Car[]> => {
     subtitle: doc.data().subtitle,
     imageUrl: doc.data().imageUrl,
     features: doc.data().features,
-    price: doc.data().price,
+    prices: doc.data().prices,
   })) as Car[];
   return cars;
 };
