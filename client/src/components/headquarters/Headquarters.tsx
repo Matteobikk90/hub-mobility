@@ -7,13 +7,13 @@ export const Headquarters = () => (
       <strong>Sedi</strong>
     </h3>
     <ul className="flex flex-col gap-2">
-      <div className="flex items-center gap-2 text-xs text-white">
+      <div className="flex items-center gap-2 text-xs text-white hover:text-azzurro cursor-pointer">
         <MapPin className="w-6 h-6" color="#ffffff" />
         <h4>{locations[0].city}</h4>
       </div>
       {locations.slice(1).map(({ city }, index) => (
         <li key={index}>
-          <div className="flex items-center gap-2 text-xs text-white">
+          <div className="flex items-center gap-2 text-xs text-white hover:text-azzurro cursor-pointer">
             <MapPin className="w-6 h-6" color="#ffffff" />
             <h5>{city}</h5>
           </div>

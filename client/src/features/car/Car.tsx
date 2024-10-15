@@ -1,3 +1,4 @@
+import { Loader } from '@/components/loader';
 import { fetchCarBySlug } from '@/utils/fetches';
 import { selectOptions } from '@/utils/lists';
 import { useQuery } from '@tanstack/react-query';
@@ -27,14 +28,13 @@ export const Car: React.FC = () => {
   const [selectedAnticipo, setSelectedAnticipo] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  if (isLoading) return <div>Loading car details...</div>;
   if (error)
     return (
       <div>
         Error: {error instanceof Error ? error.message : 'Unknown error'}
       </div>
     );
-  if (!car) return <div>Car not found</div>;
+  if (!car) return <div>Nessuna macchina trovata, riprova per favore</div>;
 
   // Get the appropriate select options based on the sectionId
   const currentOptions = selectOptions[sectionId as keyof typeof selectOptions];
@@ -58,179 +58,185 @@ export const Car: React.FC = () => {
   };
 
   return (
-    <section className="container mx-auto p-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 items-center">
-        {/* Left side: Car image */}
-        <div className="relative">
-          <img
-            src={car.imageUrl}
-            alt={car.title}
-            className="w-full h-auto object-cover"
-          />
-        </div>
+    <section className="max-w-[78rem] mx-auto p-8 min-h-[40rem] relative">
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <article className="grid grid-cols-1 md:grid-cols-2 items-center">
+          {/* Left side: Car image */}
+          <div className="relative">
+            <img
+              src={car.imageUrl}
+              alt={car.title}
+              className="w-full h-auto object-cover"
+            />
+          </div>
 
-        {/* Right side: Form and pricing info */}
-        <div className="bg-white p-8 shadow-lg">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">{car.title}</h2>
-          <p className="text-gray-600 mb-6">{car.subtitle}</p>
+          {/* Right side: Form and pricing info */}
+          <div className="bg-white p-8 shadow-lg">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              {car.title}
+            </h2>
+            <p className="text-gray-600 mb-6">{car.subtitle}</p>
 
-          <form className="grid grid-cols-1 gap-4">
-            {/* For "noleggio-lungo-termine", the dropdowns are not synchronized */}
-            {sectionId === 'noleggio-lungo-termine' ? (
-              <>
-                {/* Dropdown for Kilometres */}
-                <div className="mb-4">
-                  <label className="block text-black text-sm mb-2">
-                    Scegli i km annui inclusi nel contratto
-                  </label>
-                  <select
-                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                    value={selectedKilometres}
-                    onChange={(e) =>
-                      setSelectedKilometres(Number(e.target.value))
-                    }
-                  >
-                    {currentOptions.kilometres.map(({ id, label }, index) => (
-                      <option key={id} value={index}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+            <form className="grid grid-cols-1 gap-4">
+              {/* For "noleggio-lungo-termine", the dropdowns are not synchronized */}
+              {sectionId === 'noleggio-lungo-termine' ? (
+                <>
+                  {/* Dropdown for Kilometres */}
+                  <div className="mb-4">
+                    <label className="block text-black text-sm mb-2">
+                      Scegli i km annui inclusi nel contratto
+                    </label>
+                    <select
+                      className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                      value={selectedKilometres}
+                      onChange={(e) =>
+                        setSelectedKilometres(Number(e.target.value))
+                      }
+                    >
+                      {currentOptions.kilometres.map(({ id, label }, index) => (
+                        <option key={id} value={index}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                {/* Dropdown for Duration */}
-                <div className="mb-4">
-                  <label className="block text-black text-sm mb-2">
-                    Scegli la durata del contratto
-                  </label>
-                  <select
-                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                    value={selectedDuration}
-                    onChange={(e) =>
-                      setSelectedDuration(Number(e.target.value))
-                    }
-                  >
-                    {currentOptions.duration.map(({ id, label }, index) => (
-                      <option key={id} value={index}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  {/* Dropdown for Duration */}
+                  <div className="mb-4">
+                    <label className="block text-black text-sm mb-2">
+                      Scegli la durata del contratto
+                    </label>
+                    <select
+                      className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                      value={selectedDuration}
+                      onChange={(e) =>
+                        setSelectedDuration(Number(e.target.value))
+                      }
+                    >
+                      {currentOptions.duration.map(({ id, label }, index) => (
+                        <option key={id} value={index}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                {/* Dropdown for Anticipo */}
-                <div className="mb-4">
-                  <label className="block text-black text-sm mb-2">
-                    Cauzione
-                  </label>
-                  <select
-                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                    value={selectedAnticipo}
-                    onChange={(e) =>
-                      setSelectedAnticipo(Number(e.target.value))
-                    }
-                  >
-                    {currentOptions.anticipo.map(({ id, label }, index) => (
-                      <option key={id} value={index}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  {/* Dropdown for Anticipo */}
+                  <div className="mb-4">
+                    <label className="block text-black text-sm mb-2">
+                      Cauzione
+                    </label>
+                    <select
+                      className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                      value={selectedAnticipo}
+                      onChange={(e) =>
+                        setSelectedAnticipo(Number(e.target.value))
+                      }
+                    >
+                      {currentOptions.anticipo.map(({ id, label }, index) => (
+                        <option key={id} value={index}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                {/* Pricing info based on the selected combination */}
-                <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
-                  <Euro size={45} />
-                  {car.prices?.[getLungoTerminePriceIndex()] || 'N/A'}{' '}
-                  <span className="text-sm">i.i.</span>
-                </div>
-              </>
-            ) : (
-              <>
-                {/* For "super-car" and "noleggio-breve-termine", the dropdowns are synchronized */}
-                <div className="mb-4">
-                  <label className="block text-black text-sm mb-2">
-                    Scegli i km annui inclusi nel contratto
-                  </label>
-                  <select
-                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                    value={selectedIndex}
-                    onChange={handleSelectionChange}
-                  >
-                    {currentOptions.kilometres.map(({ id, label }, index) => (
-                      <option key={id} value={index}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  {/* Pricing info based on the selected combination */}
+                  <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
+                    <Euro size={45} />
+                    {car.prices?.[getLungoTerminePriceIndex()] || 'N/A'}{' '}
+                    <span className="text-sm">i.i.</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* For "super-car" and "noleggio-breve-termine", the dropdowns are synchronized */}
+                  <div className="mb-4">
+                    <label className="block text-black text-sm mb-2">
+                      Scegli i km annui inclusi nel contratto
+                    </label>
+                    <select
+                      className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                      value={selectedIndex}
+                      onChange={handleSelectionChange}
+                    >
+                      {currentOptions.kilometres.map(({ id, label }, index) => (
+                        <option key={id} value={index}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <div className="mb-4">
-                  <label className="block text-black text-sm mb-2">
-                    Scegli la durata del contratto
-                  </label>
-                  <select
-                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                    value={selectedIndex}
-                    onChange={handleSelectionChange}
-                  >
-                    {currentOptions.duration.map(({ id, label }, index) => (
-                      <option key={id} value={index}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  <div className="mb-4">
+                    <label className="block text-black text-sm mb-2">
+                      Scegli la durata del contratto
+                    </label>
+                    <select
+                      className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                      value={selectedIndex}
+                      onChange={handleSelectionChange}
+                    >
+                      {currentOptions.duration.map(({ id, label }, index) => (
+                        <option key={id} value={index}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                <div className="mb-4">
-                  <label className="block text-black text-sm mb-2">
-                    Anticipo
-                  </label>
-                  <select
-                    className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
-                    value={selectedIndex}
-                    onChange={handleSelectionChange}
-                  >
-                    {currentOptions.anticipo.map(({ id, label }, index) => (
-                      <option key={id} value={index}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  <div className="mb-4">
+                    <label className="block text-black text-sm mb-2">
+                      Anticipo
+                    </label>
+                    <select
+                      className="w-full p-3 bg-transparent border-b border-black focus:border-azzurro"
+                      value={selectedIndex}
+                      onChange={handleSelectionChange}
+                    >
+                      {currentOptions.anticipo.map(({ id, label }, index) => (
+                        <option key={id} value={index}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-                {/* Pricing info based on the synchronized dropdown */}
-                <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
-                  <Euro size={45} />
-                  {car.prices?.[selectedIndex] || 'N/A'}{' '}
-                  <span className="text-sm">i.i.</span>
-                </div>
-              </>
-            )}
+                  {/* Pricing info based on the synchronized dropdown */}
+                  <div className="text-4xl font-bold text-gray-900 flex items-center gap-2">
+                    <Euro size={45} />
+                    {car.prices?.[selectedIndex] || 'N/A'}{' '}
+                    <span className="text-sm">i.i.</span>
+                  </div>
+                </>
+              )}
 
-            <p className="text-gray-500 text-sm mb-6 flex items-center gap-2">
-              con servizi inclusi{' '}
-              <a href="#" className="text-azzurro">
-                <Info color="#F8B133" />
-              </a>
-            </p>
+              <p className="text-gray-500 text-sm mb-6 flex items-center gap-2">
+                con servizi inclusi{' '}
+                <a href="#" className="text-azzurro">
+                  <Info color="#F8B133" />
+                </a>
+              </p>
 
-            {/* Submit Button */}
-            <button className="w-full bg-azzurro text-white py-3 rounded-md hover:bg-black transition">
-              Richiedi l'offerta
-            </button>
+              {/* Submit Button */}
+              <button className="w-full bg-azzurro text-white py-3 rounded-md hover:bg-black transition">
+                Richiedi l'offerta
+              </button>
 
-            {/* Back Button */}
-            <button
-              type="button"
-              className="w-full border border-gray-400 text-gray-600 py-3 rounded-md  hover:bg-gray-100 transition"
-              onClick={() => navigate(`/automobili/${sectionId}`)}
-            >
-              Torna alle Offerte
-            </button>
-          </form>
-        </div>
-      </div>
+              {/* Back Button */}
+              <button
+                type="button"
+                className="w-full border border-gray-400 text-gray-600 py-3 rounded-md  hover:bg-gray-100 transition"
+                onClick={() => navigate(`/automobili/${sectionId}`)}
+              >
+                Torna alle Offerte
+              </button>
+            </form>
+          </div>
+        </article>
+      )}
     </section>
   );
 };

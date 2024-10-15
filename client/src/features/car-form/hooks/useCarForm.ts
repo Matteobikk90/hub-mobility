@@ -1,5 +1,5 @@
 import { Car } from '@/types/car.types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 type UseCarFormProps = {
   initialData?: Partial<Car>;
@@ -8,45 +8,38 @@ type UseCarFormProps = {
 
 export const useCarForm = ({ initialData, onSubmit }: UseCarFormProps) => {
   const [carData, setCarData] = useState<Partial<Car>>(initialData || {});
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     setCarData(initialData || {});
   }, [initialData]);
 
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = e.target;
+      setCarData((prev) => ({ ...prev, [name]: value }));
+    },
+    []
+  );
 
-  // Handle input changes for text fields
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCarData((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleNumberChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setCarData((prev) => ({ ...prev, [name]: parseFloat(value) }));
+    },
+    []
+  );
 
-  // Handle number input change
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setCarData((prev) => ({ ...prev, [name]: parseFloat(value) }));
-  };
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setImageFile(e.target.files?.[0] || null);
+    },
+    []
+  );
 
-  // Handle feature checkbox toggling
-  const handleFeatureChange = (feature: string) => {
-    setCarData((prev) => {
-      const features = prev.features || [];
-      const updatedFeatures = features.includes(feature)
-        ? features.filter((f) => f !== feature) // Remove the feature
-        : [...features, feature]; // Add the feature
-      return { ...prev, features: updatedFeatures };
-    });
-  };
-
-  // Handle file input change
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImageFile(e.target.files?.[0] || null);
-  };
-
-  // Handle form submission
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     onSubmit(carData, imageFile);
-  };
+  }, [carData, imageFile, onSubmit]);
 
   return {
     carData,
@@ -54,7 +47,6 @@ export const useCarForm = ({ initialData, onSubmit }: UseCarFormProps) => {
     handleChange,
     handleNumberChange,
     handleFileChange,
-    handleFeatureChange,
     handleSubmit,
     setCarData,
     setImageFile,

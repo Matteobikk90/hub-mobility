@@ -1,14 +1,19 @@
 import { useCarForm } from '@/features/car-form/hooks/useCarForm';
 import { Car } from '@/types/car.types';
-import { availableFeatures, selectOptions } from '@/utils/lists';
+import { generatePriceCombinations } from '@/utils/formatting';
 import React, { useEffect, useRef } from 'react';
+
+type SectionId =
+  | 'super-car'
+  | 'noleggio-breve-termine'
+  | 'noleggio-lungo-termine';
 
 type CarFormProps = {
   initialCarData?: Partial<Car>;
   editCarId?: string | null;
   onSubmit: (carData: Partial<Car>, imageFile: File | null) => void;
   onCancelEdit: () => void;
-  sectionId: string; // Pass sectionId to know which section we're in
+  sectionId: string;
 };
 
 export const CarForm: React.FC<CarFormProps> = ({
@@ -25,7 +30,6 @@ export const CarForm: React.FC<CarFormProps> = ({
     handleSubmit,
     setCarData,
     setImageFile,
-    handleFeatureChange,
   } = useCarForm({
     initialData: initialCarData || {},
     onSubmit: (carData, imageFile) => {
@@ -35,7 +39,7 @@ export const CarForm: React.FC<CarFormProps> = ({
         title: '',
         subtitle: '',
         prices: [],
-        features: [],
+        features: '',
         transmission: 'Manuale',
       });
       setImageFile(null);
@@ -50,23 +54,6 @@ export const CarForm: React.FC<CarFormProps> = ({
       formRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [editCarId]);
-
-  // Generate all combinations of kilometres, duration, and anticipo for "noleggio-lungo-termine"
-  const generatePriceCombinations = () => {
-    const kilometriOptions = selectOptions['noleggio-lungo-termine'].kilometres;
-    const durationOptions = selectOptions['noleggio-lungo-termine'].duration;
-    const anticipoOptions = selectOptions['noleggio-lungo-termine'].anticipo;
-
-    const combinations = [];
-    for (const kilometri of kilometriOptions) {
-      for (const duration of durationOptions) {
-        for (const anticipo of anticipoOptions) {
-          combinations.push({ kilometri, duration, anticipo });
-        }
-      }
-    }
-    return combinations;
-  };
 
   // Handle multiple price changes
   const handlePriceChange = (
@@ -86,27 +73,30 @@ export const CarForm: React.FC<CarFormProps> = ({
       <h3 className="text-lg font-semibold col-span-1 md:col-span-2">
         {editCarId ? 'Modifica' : 'Aggiungi nuova macchina'}
       </h3>
-
       {/* Title */}
-      <input
-        type="text"
-        name="title"
-        placeholder="Titolo"
-        value={carData.title || ''}
-        onChange={handleChange}
-        className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
-      />
-
-      {/* Subtitle */}
-      <input
-        type="text"
-        name="subtitle"
-        placeholder="Sottotitolo"
-        value={carData.subtitle || ''}
-        onChange={handleChange}
-        className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
-      />
-
+      <div className="text-sm flex flex-col">
+        <h4 className="font-bold">Titolo</h4>
+        <input
+          type="text"
+          name="title"
+          placeholder="Titolo"
+          value={carData.title || ''}
+          onChange={handleChange}
+          className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+        />
+      </div>
+      {/* Subtitle */}{' '}
+      <div className="text-sm flex flex-col">
+        <h4 className="font-bold">Sottotitolo</h4>
+        <input
+          type="text"
+          name="subtitle"
+          placeholder="Sottotitolo"
+          value={carData.subtitle || ''}
+          onChange={handleChange}
+          className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+        />
+      </div>
       {/* Prices */}
       {sectionId === 'super-car' || sectionId === 'noleggio-breve-termine' ? (
         <>
@@ -116,7 +106,7 @@ export const CarForm: React.FC<CarFormProps> = ({
             placeholder="Prezzo 1"
             value={carData.prices?.[0] || ''}
             onChange={(e) => handlePriceChange(e, 0)}
-            className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+            className="font-bold p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
           />
           <input
             type="number"
@@ -124,7 +114,7 @@ export const CarForm: React.FC<CarFormProps> = ({
             placeholder="Prezzo 2"
             value={carData.prices?.[1] || ''}
             onChange={(e) => handlePriceChange(e, 1)}
-            className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+            className="font-bold p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
           />
           <input
             type="number"
@@ -132,51 +122,45 @@ export const CarForm: React.FC<CarFormProps> = ({
             placeholder="Prezzo 3"
             value={carData.prices?.[2] || ''}
             onChange={(e) => handlePriceChange(e, 2)}
-            className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+            className="font-bold p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
           />
         </>
       ) : (
         <>
-          {generatePriceCombinations().map((combination, index) => (
-            <div key={index} className="col-span-1 md:col-span-2">
-              <label className="block text-xs">
-                Prezzo per {combination.kilometri.label},{' '}
-                {combination.duration.label}, {combination.anticipo.label}
-              </label>
-              <input
-                type="number"
-                name={`price-${index}`}
-                placeholder={`Prezzo per ${combination.kilometri.label}, ${combination.duration.label}, ${combination.anticipo.label}`}
-                value={carData.prices?.[index] || ''}
-                onChange={(e) => handlePriceChange(e, index)}
-                className="p-1 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
-              />
-            </div>
-          ))}
+          {generatePriceCombinations(sectionId as SectionId).map(
+            (combination, index) => (
+              <div key={index} className="col-span-1 md:col-span-2">
+                <label className="font-bold block text-xs">
+                  {combination.kilometri.label}, {combination.duration.label},{' '}
+                  {combination.anticipo.label}
+                </label>
+                <input
+                  type="number"
+                  name={`price-${index}`}
+                  placeholder={`${combination.kilometri.label}, ${combination.duration.label}, ${combination.anticipo.label}`}
+                  value={carData.prices?.[index] || ''}
+                  onChange={(e) => handlePriceChange(e, index)}
+                  className="p-1 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
+                />
+              </div>
+            )
+          )}
         </>
       )}
-
-      {/* Features Checkboxes */}
-      <div className="col-span-1 md:col-span-2">
-        <h4 className="mb-2">Accessori</h4>
-        <div className="grid grid-cols-2 gap-2">
-          {availableFeatures.map((feature) => (
-            <label key={feature} className="flex items-center">
-              <input
-                type="checkbox"
-                checked={carData.features?.includes(feature) || false}
-                onChange={() => handleFeatureChange(feature)}
-                className="mr-2"
-              />
-              {feature}
-            </label>
-          ))}
-        </div>
+      {/* Features Checkboxes */}{' '}
+      <div className="text-sm flex flex-col">
+        <h4 className="font-bold">Accessori</h4>
+        <textarea
+          name="features"
+          placeholder="Inserisci accessori separati da una virgola"
+          value={carData.features || ''}
+          onChange={handleChange}
+          className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full resize-none min-h-16"
+        />
       </div>
-
       {/* Transmission Radio Input */}
-      <div className="col-span-1 md:col-span-2">
-        <h4 className="mb-2">Tipo di Trasmissione</h4>
+      <div className="col-span-1 md:col-span-2 text-sm">
+        <h4 className="mb-2 font-bold">Tipo di Trasmissione</h4>
         <div className="flex items-center gap-4">
           <label className="flex items-center">
             <input
@@ -202,17 +186,17 @@ export const CarForm: React.FC<CarFormProps> = ({
           </label>
         </div>
       </div>
-
       {/* Image Upload */}
       <div className="col-span-1 md:col-span-2">
-        <label className="block text-black text-sm mb-2">Carica immagine</label>
+        <label className="block text-black text-sm mb-2 font-bold">
+          Carica immagine
+        </label>
         <input
           type="file"
           onChange={handleFileChange}
           className="p-3 bg-transparent border-b border-black focus:border-b-2 focus:border-blue-500 w-full"
         />
       </div>
-
       {/* Submit Button */}
       <div className="col-span-1 md:col-span-2">
         <button
@@ -222,7 +206,6 @@ export const CarForm: React.FC<CarFormProps> = ({
           {editCarId ? 'Aggiorna' : 'Aggiungi'}
         </button>
       </div>
-
       {/* Cancel Button (only in edit mode) */}
       {editCarId && (
         <div className="col-span-1 md:col-span-2">

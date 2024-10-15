@@ -1,6 +1,11 @@
 import { ServicesId } from '@/types/services.types';
 import { Facebook, Instagram, Linkedin, Twitter } from 'lucide-react';
 
+type SectionId =
+  | 'super-car'
+  | 'noleggio-breve-termine'
+  | 'noleggio-lungo-termine';
+
 export const navbarLinks: {
   id: string;
   name: string;
@@ -161,7 +166,7 @@ export const serviceData: Record<
     formText: 'Denuncia qui il tuo sinistro.',
   },
   'officina-gommista': {
-    videoUrl: '/assets/videos/services/officina-video.mp4',
+    videoUrl: '/assets/videos/services/cristalli-video.mp4',
     title: 'Officina / Gommista',
     subtitle: 'Riparazioni Auto e Servizi di Gommista',
     description:
@@ -170,7 +175,7 @@ export const serviceData: Record<
     formText: 'Prenota qui il tuo tagliando o il cambio gomme',
   },
   assicurazioni: {
-    videoUrl: '/assets/videos/services/assicurazioni-video.mp4',
+    videoUrl: '/assets/videos/services/assicurazione-video.mp4',
     title: 'Assicurazioni',
     subtitle: 'Servizi Assicurativi Personalizzati',
     description:
@@ -214,7 +219,14 @@ export const availableFeatures = [
   'Apple car play',
 ];
 
-export const selectOptions = {
+export const selectOptions: Record<
+  SectionId,
+  {
+    kilometres: { id: string; label: string }[];
+    duration: { id: string; label: string }[];
+    anticipo: { id: string; label: string }[];
+  }
+> = {
   'super-car': {
     kilometres: [
       { id: '200', label: '200 Km' },
@@ -223,8 +235,8 @@ export const selectOptions = {
     ],
     duration: [
       { id: '1-giorno', label: '1 giorno' },
-      { id: 'weekend', label: '1 settimana' },
-      { id: 'settimana', label: 'Settimana' },
+      { id: 'weekend', label: '1 week end' },
+      { id: 'settimana', label: '1 Settimana' },
     ],
     anticipo: [
       { id: 'cauzione-500', label: 'Cauzione € 5.000' },

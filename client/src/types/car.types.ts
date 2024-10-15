@@ -4,7 +4,7 @@ export type Car = {
   subtitle: string;
   slug: string;
   imageUrl: string;
-  features: string[];
+  features: string;
   prices: string[];
   transmission: 'Manuale' | 'Automatico';
 };
@@ -14,7 +14,7 @@ export type UpdatedCarData = {
   subtitle?: string;
   slug: string;
   prices: string[];
-  features?: string[];
+  features?: string;
   imageUrl?: string;
   transmission: 'Manuale' | 'Automatico';
 };

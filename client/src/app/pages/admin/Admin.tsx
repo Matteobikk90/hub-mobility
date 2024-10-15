@@ -5,7 +5,7 @@ import { useAddCar } from '@/hooks/useAdd';
 import { useDeleteCar } from '@/hooks/useDelete';
 import { useEditCar } from '@/hooks/useEdit';
 import { Car } from '@/types/car.types';
-import { generateSlug } from '@/utils/formatting';
+import { generatePriceCombinations, generateSlug } from '@/utils/formatting';
 import { navbarLinks } from '@/utils/lists';
 import { signOut } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
@@ -13,6 +13,11 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { Euro } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+type SectionId =
+  | 'super-car'
+  | 'noleggio-breve-termine'
+  | 'noleggio-lungo-termine';
 
 export const Admin: React.FC = () => {
   const navigate = useNavigate();
@@ -58,7 +63,7 @@ export const Admin: React.FC = () => {
       let updatedCarData: Partial<Car> = {
         ...carData,
         slug,
-        features: carData.features || [],
+        features: carData.features || '',
         prices: carData.prices || ['', '', ''], // Ensure prices array is present
       };
 
@@ -102,7 +107,7 @@ export const Admin: React.FC = () => {
           ...carData,
           slug,
           imageUrl,
-          features: carData.features || [],
+          features: carData.features || '',
           prices: carData.prices || ['', '', ''], // Ensure prices array is initialized
         };
 
@@ -120,7 +125,7 @@ export const Admin: React.FC = () => {
                   subtitle: newCarData.subtitle || '',
                   slug: newCarData.slug || '',
                   imageUrl: newCarData.imageUrl || '',
-                  features: newCarData.features || [],
+                  features: newCarData.features || '',
                   prices: newCarData.prices ?? ['', '', ''], // Initialize prices if missing
                   transmission: newCarData.transmission || 'Manuale',
                 },
@@ -201,18 +206,33 @@ export const Admin: React.FC = () => {
               <p>{car.subtitle}</p>
 
               {/* Display all prices */}
-              {car.prices?.map((price, index) => (
-                <p key={index} className="flex justify-between items-center">
-                  <span>Prezzo {index + 1}:</span>
-                  <span className="flex">
-                    <Euro /> {price}
-                  </span>
-                </p>
-              ))}
+              {car.prices?.map((price, index) => {
+                const combinations = generatePriceCombinations(
+                  sectionId as SectionId
+                ); // Generate combinations for the current section
+
+                // Find the corresponding combination for the price index
+                const combination = combinations[index];
+
+                return (
+                  <p
+                    key={index}
+                    className="flex justify-between items-center text-xs"
+                  >
+                    <strong>
+                      {combination?.kilometri.label},{' '}
+                      {combination?.duration.label},{' '}
+                      {combination?.anticipo.label}:
+                    </strong>
+                    <span className="flex items-center gap-2">
+                      <Euro /> {price}
+                    </span>
+                  </p>
+                );
+              })}
 
               <p className="text-sm">
-                <strong className="font-bold">Accessori:</strong>{' '}
-                {car.features.join(', ')}
+                <strong className="font-bold">Accessori:</strong> {car.features}
               </p>
               <p className="text-sm">
                 <strong className="font-bold">Trasmissione:</strong>{' '}

@@ -46,7 +46,7 @@ export const Section: React.FC = () => {
           <h2 className="text-4xl font-bold text-black mb-[4rem] text-center animate-slide-in-left">
             {formatTitle(sectionId!)}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 justify-between gap-8 mb-16">
+          <div className="grid grid-cols-2 md:grid-cols-4 justify-between gap-8 mb-16">
             {displayedCars?.map((car) => (
               <article className="text-black flex flex-col gap-4">
                 <img
@@ -54,34 +54,51 @@ export const Section: React.FC = () => {
                   alt={car.title}
                   className="h-auto object-cover max-h-[22.5rem] rounded-lg"
                 />
-                {console.log(car) as any}
                 <h3 className="text-2xl font-bold">{car.title}</h3>
                 <p className="font-medium">{car.subtitle}</p>
                 <span className="w-full h-[0.125rem] bg-azzurro"></span>
                 <ul className="flex flex-wrap gap-6 text-xs">
-                  {car.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-1">
-                      <span className="text-azzurro">✔</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
+                  {typeof car.features === 'string' &&
+                  car.features.length > 0 ? (
+                    car.features.split(',').map((feature, index) => (
+                      <li key={index} className="flex items-center gap-1">
+                        <span className="text-azzurro">✔</span>
+                        <span>{feature.trim()}</span>{' '}
+                      </li>
+                    ))
+                  ) : (
+                    <li>Nessun accessorio disponibile</li>
+                  )}
                 </ul>
-                <div className="ml-auto text-right">
-                  <div className="border-b-2 pb-1 mb-1 border-b-azzurro max-w-max flex gap-1 items-end">
-                    da
-                    <strong className="text-3xl font-medium">
-                      {car.prices?.[0] ?? 'N/A'}
-                    </strong>
-                    <Euro size={45} />
+                {sectionId === 'noleggio-lungo-termine' ? (
+                  <div className="flex items-end gap-2 justify-between">
+                    <strong>Prezzo click:</strong>
+                    <div className="border-b-2 pb-1 mb-1 border-b-azzurro max-w-max flex gap-1 items-end">
+                      <strong className="text-3xl font-medium">
+                        {car.prices?.[0] ?? 'N/A'}
+                      </strong>
+                      <Euro size={45} />
+                    </div>
                   </div>
-                  al giorno
-                </div>
+                ) : (
+                  <div className="ml-auto text-right">
+                    <div className="border-b-2 pb-1 mb-1 border-b-azzurro max-w-max flex gap-1 items-end">
+                      da
+                      <strong className="text-3xl font-medium">
+                        {car.prices?.[0] ?? 'N/A'}
+                      </strong>
+                      <Euro size={45} />
+                    </div>
+                    al giorno
+                  </div>
+                )}
+
                 <Link
                   to={`/automobili/${sectionId}/${car.slug}`}
                   key={car.id}
                   className="flex flex-col justify-between"
                 >
-                  <button className="text-black hover:font-bold text-xl border-b-2 border-b-azzurro py-2">
+                  <button className="text-black hover:font-bold text-xl border-b-2 border-b-azzurro py-2 hover:border-b-4">
                     Richiedi preventivo
                   </button>
                 </Link>
