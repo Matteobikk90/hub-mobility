@@ -12,6 +12,7 @@ router.post(
   upload.single('file'),
   async (req: Request, res: Response) => {
     const {
+      sectinId,
       nome,
       cognome,
       email,
@@ -22,13 +23,13 @@ router.post(
       indirizzo,
       cap,
       data,
-      privacy,
     } = req.body;
     const file = req.file; // The uploaded file, if present
 
     try {
       // Call the email service to send the email
       await sendEmail({
+        sectinId,
         nome,
         cognome,
         email,
@@ -39,7 +40,6 @@ router.post(
         indirizzo,
         cap,
         data,
-        privacy: privacy === 'true', // Convert privacy to boolean
         file: file
           ? { originalname: file.originalname, buffer: file.buffer }
           : undefined, // Pass the file data if it exists
